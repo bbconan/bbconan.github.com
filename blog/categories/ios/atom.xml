@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: IOS | Home Of Code Monkey]]></title>
+  <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://bbconan.github.io/"/>
+  <updated>2013-08-05T16:57:28+08:00</updated>
+  <id>http://bbconan.github.io/</id>
+  <author>
+    <name><![CDATA[conan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[IOS获得广播地址]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/"/>
+    <updated>2013-08-05T16:13:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi</id>
+    <content type="html"><![CDATA[<p>最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：</p>
+
+<h4>1、</h4>
+
+<p>``` objc</p>
+
+<h1>include &lt;sys/types.h></h1>
+
+<h1>include &lt;sys/socket.h></h1>
+
+<h1>include &lt;ifaddrs.h></h1>
+
+<h1>include &lt;arpa/inet.h></h1>
+
+<ul>
+<li>(NSString <em>)getBroadcastAddress
+{
+  NSString </em>broadCastAddress = @&ldquo;&rdquo;;
+  struct ifaddrs <em>interfaces = NULL;
+  struct ifaddrs </em>temp_addr = NULL;
+  int success = 0;
+  // retrieve the current interfaces &ndash; returns 0 on success
+  success = getifaddrs(&amp;interfaces);
+   if (success == 0) {
+      temp_addr = interfaces;
+    while(temp_addr != NULL)
+      {
+          // check if interface is en0 which is the wifi connection on the iPhone
+          if(temp_addr->ifa_addr->sa_family == AF_INET)
+          {
+              if([[NSString stringWithUTF8String:temp_addr->ifa_name]                isEqualToString:@&ldquo;en0&rdquo;])
+              {
+                  broadCastAddress = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_dstaddr)&ndash;>sin_addr)];
+    }
+   }
+     temp_addr = temp_addr->ifa_next;
+      }
+  }
+    freeifaddrs(interfaces);
+    return broadCastAddress;
+}
+```
+
+<h4>2、</h4>
+
+<p>需要在xcode该工程里配置
+<img src="/images/broadcastaddr_setting.jpeg">
+加入CFNetwork.framework、SystemConfiguration.framework</p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
