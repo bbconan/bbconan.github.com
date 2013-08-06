@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Hello World - Home Of Code Monkey</title>
+  <title>dyld:lazy symbol bingding failed:Symbol not found 问题的解决 - Home Of Code Monkey</title>
   <meta name="author" content="conan">
 
   
-  <meta name="description" content="Hello World
-">
+  <meta name="description" content="遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic Referenced from: /Users/imove-1/Library/Application &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://bbconan.github.io/blog/2013/08/05/hello-world">
+  <link rel="canonical" href="http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Home Of Code Monkey" type="application/atom+xml">
@@ -67,7 +66,7 @@
   
   <header>
     
-      <h1 class="entry-title">Hello World</h1>
+      <h1 class="entry-title">Dyld:lazy Symbol Bingding failed:Symbol Not Found 问题的解决</h1>
     
     
       <p class="meta">
@@ -83,14 +82,20 @@
   
 
 
-<time datetime="2013-08-05T15:58:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+<time datetime="2013-08-06T16:44:00+08:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Hello World</p>
+<div class="entry-content"><p>遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic
+  Referenced from: /Users/imove-1/Library/Application Support/iPhone Simulator/5.1/Applications/24E4730A-9DB0-44F7-97E0-2D08F4AEC9DD/iMove.app/iMove<br/>
+  Expected in: /Applications/Xcode.app/Contents/Developer/<br/>Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk/System/Library/<br/>Frameworks/Foundation.framework/Foundation</p>
+
+<p>  经过一番研究，发现出错原因：项目中，我是用cocoapods管理第三方包的。其中第三方包SwipeView的iOS Deployment Target 默认为iOS 6.1，改成4.3就可以了。</p>
+
+<p><img src="/images/dyld_lazy_symbol.jpeg"></p>
 </div>
 
 
@@ -113,12 +118,12 @@
   
 
 
-<time datetime="2013-08-05T15:58:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+<time datetime="2013-08-06T16:44:00+08:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/za-tan/'>杂谈</a>
+    <a class='category' href='/blog/categories/ios/'>IOS</a>
   
 </span>
 
@@ -150,8 +155,8 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/" title="Previous Post: IOS获得广播地址">&laquo; IOS获得广播地址</a>
       
-        <a class="basic-alignment right" href="/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/" title="Next Post: IOS获得广播地址">IOS获得广播地址 &raquo;</a>
       
     </p>
   </footer>

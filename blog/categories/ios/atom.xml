@@ -4,7 +4,7 @@
   <title><![CDATA[Category: IOS | Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-08-05T16:57:28+08:00</updated>
+  <updated>2013-08-06T16:53:30+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[dyld:lazy symbol bingding failed:Symbol not found 问题的解决]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue/"/>
+    <updated>2013-08-06T16:44:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue</id>
+    <content type="html"><![CDATA[<p>遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic
+  Referenced from: /Users/imove-1/Library/Application Support/iPhone Simulator/5.1/Applications/24E4730A-9DB0-44F7-97E0-2D08F4AEC9DD/iMove.app/iMove<br/>
+  Expected in: /Applications/Xcode.app/Contents/Developer/<br/>Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk/System/Library/<br/>Frameworks/Foundation.framework/Foundation</p>
+
+<p>  经过一番研究，发现出错原因：项目中，我是用cocoapods管理第三方包的。其中第三方包SwipeView的iOS Deployment Target 默认为iOS 6.1，改成4.3就可以了。</p>
+
+<p><img src="/images/dyld_lazy_symbol.jpeg"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[IOS获得广播地址]]></title>

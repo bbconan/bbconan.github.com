@@ -9,37 +9,7 @@
   <meta name="author" content="conan">
 
   
-  <meta name="description" content="最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下： 1、 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-#include & &hellip;">
+  <meta name="description" content="遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic Referenced from: /Users/imove-1/Library/Application &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -93,6 +63,48 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue/">Dyld:lazy Symbol Bingding failed:Symbol Not Found 问题的解决</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-06T16:44:00+08:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic
+  Referenced from: /Users/imove-1/Library/Application Support/iPhone Simulator/5.1/Applications/24E4730A-9DB0-44F7-97E0-2D08F4AEC9DD/iMove.app/iMove<br/>
+  Expected in: /Applications/Xcode.app/Contents/Developer/<br/>Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk/System/Library/<br/>Frameworks/Foundation.framework/Foundation</p>
+
+<p>  经过一番研究，发现出错原因：项目中，我是用cocoapods管理第三方包的。其中第三方包SwipeView的iOS Deployment Target 默认为iOS 6.1，改成4.3就可以了。</p>
+
+<p><img src="/images/dyld_lazy_symbol.jpeg"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -248,6 +260,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue/">Dyld:lazy Symbol Bingding failed:Symbol Not Found 问题的解决</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/">IOS获得广播地址</a>
