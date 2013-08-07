@@ -92,88 +92,14 @@
   </header>
 
 
-  <div class="entry-content"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter三种设置水平方向的文字对齐方式。那怎么做，可以是文字顶部对齐呢？下面有两种方法：&lt;!—more—></p>
+  <div class="entry-content"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter三种设置水平方向的文字对齐方式。那怎么做，可以是文字顶部对齐呢？下面有两种方法：</p>
 
-<h3>方法一</h3>
-
-<p>1、label先设置完text内容，即[label setText:@&ldquo;你好&rdquo;]。</p>
-
-<p>2、label然后调用sizeToFit方法，即[label sizeToFit]。</p>
-
-<p>由于label已经是文字的高度和宽度了，所以此时已经顶部对齐。</p>
-
-<h3>方法二</h3>
-
-<p>最正统的方法，利用object-c的category特性，修改UILabel的代码。如下 :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// -- file: UILabel+VerticalAlign.h</span>
-</span><span class='line'><span class="cp">#pragma mark VerticalAlign</span>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">UILabel</span> <span class="nl">(VerticalAlign)</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignTop</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignBottom</span><span class="p">;</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// -- file: UILabel+VerticalAlign.m</span>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">UILabel</span> <span class="nl">(VerticalAlign)</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignTop</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">CGSize</span> <span class="n">fontSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">double</span> <span class="n">finalHeight</span> <span class="o">=</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">self</span><span class="p">.</span><span class="n">numberOfLines</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">double</span> <span class="n">finalWidth</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>    <span class="c1">//expected width of label</span>
-</span><span class='line'>    <span class="n">CGSize</span> <span class="n">theStringSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span> <span class="nl">constrainedToSize:</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">finalWidth</span><span class="p">,</span> <span class="n">finalHeight</span><span class="p">)</span> <span class="nl">lineBreakMode:</span><span class="n">self</span><span class="p">.</span><span class="n">lineBreakMode</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">newLinesToPad</span> <span class="o">=</span> <span class="p">(</span><span class="n">finalHeight</span>  <span class="o">-</span> <span class="n">theStringSize</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">newLinesToPad</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">stringByAppendingString:</span><span class="s">@&quot;</span><span class="se">\n</span><span class="s"> &quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignBottom</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">CGSize</span> <span class="n">fontSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">double</span> <span class="n">finalHeight</span> <span class="o">=</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">self</span><span class="p">.</span><span class="n">numberOfLines</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">double</span> <span class="n">finalWidth</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>    <span class="c1">//expected width of label</span>
-</span><span class='line'>    <span class="n">CGSize</span> <span class="n">theStringSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span> <span class="nl">constrainedToSize:</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">finalWidth</span><span class="p">,</span> <span class="n">finalHeight</span><span class="p">)</span> <span class="nl">lineBreakMode:</span><span class="n">self</span><span class="p">.</span><span class="n">lineBreakMode</span><span class="p">];</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">newLinesToPad</span> <span class="o">=</span> <span class="p">(</span><span class="n">finalHeight</span>  <span class="o">-</span> <span class="n">theStringSize</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">newLinesToPad</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot; </span><span class="se">\n</span><span class="s">%@&quot;</span><span class="p">,</span><span class="n">self</span><span class="p">.</span><span class="n">text</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后，调用即可。</p>
-
-<h4>参考资料</h4>
-
-<p><a href="http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/">http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/</a></p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi/">阅读全文 &rarr;</a>
+    </footer>
   
 
 
