@@ -4,7 +4,7 @@
   <title><![CDATA[Category: IOS | Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-08-07T15:23:45+08:00</updated>
+  <updated>2013-08-08T15:39:04+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,38 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HMAC_SHA1算法的object-c实现]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/"/>
+    <updated>2013-08-08T15:26:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian</id>
+    <content type="html"><![CDATA[<p>做项目时，用到HMAC_SHA1算法。代码实现，如下：
+``` objc
+static NSString <em>HMAC_SHA1 = @&ldquo;HmacSHA1&rdquo;;
+static NSString </em>APPKEY = @&ldquo;123456&rdquo;;//这是key
+&ndash; (NSString <em>)generateSignature:(NSString </em>)data
+{</p>
+
+<pre><code>const char *cKey = [APPKEY cStringUsingEncoding:NSASCIIStringEncoding];
+const char *cData = [data cStringUsingEncoding:NSASCIIStringEncoding];
+
+unsigned char cHMAC[CC_SHA1_DIGEST_LENGTH];
+
+CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+
+NSData *HMAC = [[[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)] autorelease];
+
+NSString *hash = [HMAC base64Encoding];
+
+return hash;
+</code></pre>
+
+<p>}
+```
+这里用到NSData类别:<a href="https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/">https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[设置UILabel文字顶部对齐]]></title>

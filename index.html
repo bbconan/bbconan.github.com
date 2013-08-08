@@ -9,7 +9,25 @@
   <meta name="author" content="conan">
 
   
-  <meta name="description" content="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, &hellip;">
+  <meta name="description" content="做项目时，用到HMAC_SHA1算法。代码实现，如下： 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+static NSString *HMAC_SHA1 = @&quot;HmacSHA1&quot;;
+static NSString *APPKEY &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -63,6 +81,81 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/">HMAC_SHA1算法的object-c实现</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-08T15:26:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>做项目时，用到HMAC_SHA1算法。代码实现，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">HMAC_SHA1</span> <span class="o">=</span> <span class="s">@&quot;HmacSHA1&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">APPKEY</span> <span class="o">=</span> <span class="s">@&quot;123456&quot;</span><span class="p">;</span><span class="c1">//这是key</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">generateSignature:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">data</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cKey</span> <span class="o">=</span> <span class="p">[</span><span class="n">APPKEY</span> <span class="nl">cStringUsingEncoding:</span><span class="n">NSASCIIStringEncoding</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cData</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span> <span class="nl">cStringUsingEncoding:</span><span class="n">NSASCIIStringEncoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">cHMAC</span><span class="p">[</span><span class="n">CC_SHA1_DIGEST_LENGTH</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CCHmac</span><span class="p">(</span><span class="n">kCCHmacAlgSHA1</span><span class="p">,</span> <span class="n">cKey</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">cKey</span><span class="p">),</span> <span class="n">cData</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">cData</span><span class="p">),</span> <span class="n">cHMAC</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSData</span> <span class="o">*</span><span class="n">HMAC</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">NSData</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBytes:</span><span class="n">cHMAC</span> <span class="nl">length:</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cHMAC</span><span class="p">)]</span> <span class="n">autorelease</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">hash</span> <span class="o">=</span> <span class="p">[</span><span class="n">HMAC</span> <span class="n">base64Encoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">hash</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里用到NSData类别:<a href="https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/">https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -301,6 +394,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/">HMAC_SHA1算法的object-c实现</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi/">设置UILabel文字顶部对齐</a>
