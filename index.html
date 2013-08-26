@@ -9,25 +9,8 @@
   <meta name="author" content="conan">
 
   
-  <meta name="description" content="做项目时，用到HMAC_SHA1算法。代码实现，如下： 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-static NSString *HMAC_SHA1 = @&quot;HmacSHA1&quot;;
-static NSString *APPKEY &hellip;">
+  <meta name="description" content="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。
+&nbsp;&nbsp;&nbsp;&nbsp &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -81,6 +64,44 @@ static NSString *APPKEY &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/26/cocoahttpserver-crash/">CocoaHTTPServer出现Crash的解决方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-26T17:33:00+08:00" pubdate data-updated="true">Aug 26<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后发现是在 HTTPConnection::filePathForURI 函数中 config 的 documentroot 是空的，调试好久。然后，通过研究和搜索，发现最新版的CocoaHTTPServer用的是ARC。解决办法就是：选择项目 target，Build Phases &ndash;> Compile Sources 中，给所有 CocoaHTTPServer 的代码添加 Compiler Flags ： -fobjc-arc 即可。
+<img src="/images/cocoahttpserver_crash.png"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -416,6 +437,10 @@ static NSString *APPKEY &hellip;">
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/08/26/cocoahttpserver-crash/">CocoaHTTPServer出现Crash的解决方法</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/">HMAC_SHA1算法的object-c实现</a>
       </li>
     
@@ -431,19 +456,15 @@ static NSString *APPKEY &hellip;">
         <a href="/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/">IOS获得广播地址</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2013/08/05/hello-world/">Hello World</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/ios' style='font-size: 160.0%'>IOS(4)</a> <a href='/blog/categories/za-tan' style='font-size: 115.0%'>杂谈(1)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/ios' style='font-size: 160.0%'>IOS(5)</a> <a href='/blog/categories/za-tan' style='font-size: 112.0%'>杂谈(1)</a> </span>
 </section>
 <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/ios/'>IOS (4)</a></li><li><a href='/blog/categories/za-tan/'>杂谈 (1)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/ios/'>IOS (5)</a></li><li><a href='/blog/categories/za-tan/'>杂谈 (1)</a></li></ul>
 </section>
 
 

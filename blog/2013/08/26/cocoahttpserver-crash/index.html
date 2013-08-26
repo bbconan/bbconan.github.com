@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Hello World - Home Of Code Monkey</title>
+  <title>CocoaHTTPServer出现Crash的解决方法 - Home Of Code Monkey</title>
   <meta name="author" content="conan">
 
   
-  <meta name="description" content="Hello World
-">
+  <meta name="description" content="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。
+&nbsp;&nbsp;&nbsp;&nbsp &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://bbconan.github.io/blog/2013/08/05/hello-world">
+  <link rel="canonical" href="http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Home Of Code Monkey" type="application/atom+xml">
@@ -67,7 +67,7 @@
   
   <header>
     
-      <h1 class="entry-title">Hello World</h1>
+      <h1 class="entry-title">CocoaHTTPServer出现Crash的解决方法</h1>
     
     
       <p class="meta">
@@ -83,14 +83,16 @@
   
 
 
-<time datetime="2013-08-05T15:58:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+<time datetime="2013-08-26T17:33:00+08:00" pubdate data-updated="true">Aug 26<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Hello World</p>
+<div class="entry-content"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后发现是在 HTTPConnection::filePathForURI 函数中 config 的 documentroot 是空的，调试好久。然后，通过研究和搜索，发现最新版的CocoaHTTPServer用的是ARC。解决办法就是：选择项目 target，Build Phases &ndash;> Compile Sources 中，给所有 CocoaHTTPServer 的代码添加 Compiler Flags ： -fobjc-arc 即可。
+<img src="/images/cocoahttpserver_crash.png"></p>
 </div>
 
 
@@ -113,12 +115,12 @@
   
 
 
-<time datetime="2013-08-05T15:58:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+<time datetime="2013-08-26T17:33:00+08:00" pubdate data-updated="true">Aug 26<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/za-tan/'>杂谈</a>
+    <a class='category' href='/blog/categories/ios/'>IOS</a>
   
 </span>
 
@@ -150,8 +152,8 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/" title="Previous Post: HMAC_SHA1算法的object-c实现">&laquo; HMAC_SHA1算法的object-c实现</a>
       
-        <a class="basic-alignment right" href="/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/" title="Next Post: IOS获得广播地址">IOS获得广播地址 &raquo;</a>
       
     </p>
   </footer>

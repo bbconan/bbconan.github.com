@@ -4,7 +4,7 @@
   <title><![CDATA[Category: IOS | Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-08-09T16:36:51+08:00</updated>
+  <updated>2013-08-26T17:39:44+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaHTTPServer出现Crash的解决方法]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash/"/>
+    <updated>2013-08-26T17:33:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后发现是在 HTTPConnection::filePathForURI 函数中 config 的 documentroot 是空的，调试好久。然后，通过研究和搜索，发现最新版的CocoaHTTPServer用的是ARC。解决办法就是：选择项目 target，Build Phases &ndash;> Compile Sources 中，给所有 CocoaHTTPServer 的代码添加 Compiler Flags ： -fobjc-arc 即可。
+<img src="/images/cocoahttpserver_crash.png"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HMAC_SHA1算法的object-c实现]]></title>
