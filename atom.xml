@@ -4,7 +4,7 @@
   <title><![CDATA[Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-08-26T17:39:44+08:00</updated>
+  <updated>2013-09-05T16:48:09+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[我的代码历史可视化]]></title>
+    <link href="http://bbconan.github.io/blog/2013/09/05/wo-de-dai-ma-li-shi-ke-shi-hua/"/>
+    <updated>2013-09-05T16:40:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/09/05/wo-de-dai-ma-li-shi-ke-shi-hua</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近，我看到一个非常好玩的东西<a href="https://code.google.com/p/gource/">Gource</a>。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gource可以将代码版本控制系统里面的日志全部可视化， 所谓可视化就是可以看见每个成员在系统里面提交代码的行为。 Gource目前支持git/hg/svn，cvs通过一个简单的脚本也可以被Gource支持。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我将我的项目生成可视化效果截图：<br></p>
+
+<!--more-->
+
+
+<p><img src="http://bbconan.github.io/images/svnHistory.png"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CocoaHTTPServer出现Crash的解决方法]]></title>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: IOS | Home Of Code Monkey]]></title>
+  <title><![CDATA[Category: iOS | Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-08-26T17:39:44+08:00</updated>
+  <updated>2013-09-05T16:48:09+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -14,186 +14,18 @@
 
   
   <entry>
-    <title type="html"><![CDATA[CocoaHTTPServer出现Crash的解决方法]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash/"/>
-    <updated>2013-08-26T17:33:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash</id>
-    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后发现是在 HTTPConnection::filePathForURI 函数中 config 的 documentroot 是空的，调试好久。然后，通过研究和搜索，发现最新版的CocoaHTTPServer用的是ARC。解决办法就是：选择项目 target，Build Phases &ndash;> Compile Sources 中，给所有 CocoaHTTPServer 的代码添加 Compiler Flags ： -fobjc-arc 即可。
-<img src="/images/cocoahttpserver_crash.png"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HMAC_SHA1算法的object-c实现]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/"/>
-    <updated>2013-08-08T15:26:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian</id>
-    <content type="html"><![CDATA[<p>做项目时，用到HMAC_SHA1算法。代码实现，如下：
-``` objc
-static NSString <em>HMAC_SHA1 = @&ldquo;HmacSHA1&rdquo;;
-static NSString </em>APPKEY = @&ldquo;123456&rdquo;;//这是key
-&ndash; (NSString <em>)generateSignature:(NSString </em>)data
-{</p>
-
-<pre><code>const char *cKey = [APPKEY cStringUsingEncoding:NSASCIIStringEncoding];
-const char *cData = [data cStringUsingEncoding:NSASCIIStringEncoding];
-
-unsigned char cHMAC[CC_SHA1_DIGEST_LENGTH];
-
-CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
-
-NSData *HMAC = [[[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)] autorelease];
-
-NSString *hash = [HMAC base64Encoding];
-
-return hash;
-</code></pre>
-
-<p>}
-```
-这里用到NSData类别:<a href="https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/">https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[设置UILabel文字顶部对齐]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi/"/>
-    <updated>2013-08-07T14:45:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi</id>
-    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter三种设置水平方向的文字对齐方式。那怎么做，可以是文字顶部对齐呢？下面有两种方法：</p>
+    <title type="html"><![CDATA[我的代码历史可视化]]></title>
+    <link href="http://bbconan.github.io/blog/2013/09/05/wo-de-dai-ma-li-shi-ke-shi-hua/"/>
+    <updated>2013-09-05T16:40:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/09/05/wo-de-dai-ma-li-shi-ke-shi-hua</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近，我看到一个非常好玩的东西<a href="https://code.google.com/p/gource/">Gource</a>。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gource可以将代码版本控制系统里面的日志全部可视化， 所谓可视化就是可以看见每个成员在系统里面提交代码的行为。 Gource目前支持git/hg/svn，cvs通过一个简单的脚本也可以被Gource支持。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我将我的项目生成可视化效果截图：<br></p>
 
 <!--more-->
 
 
-<h3>方法一</h3>
-
-<p>1、label先设置完text内容，即[label setText:@&ldquo;你好&rdquo;]。</p>
-
-<p>2、label然后调用sizeToFit方法，即[label sizeToFit]。</p>
-
-<p>由于label已经是文字的高度和宽度了，所以此时已经顶部对齐。</p>
-
-<h3>方法二</h3>
-
-<p>最正统的方法，利用object-c的category特性，修改UILabel的代码。如下 :
-``` objc
-// &mdash; file: UILabel+VerticalAlign.h</p>
-
-<h1>pragma mark VerticalAlign</h1>
-
-<p>@interface UILabel (VerticalAlign)
-&ndash; (void)alignTop;
-&ndash; (void)alignBottom;
-@end</p>
-
-<p>// &mdash; file: UILabel+VerticalAlign.m
-@implementation UILabel (VerticalAlign)
-&ndash; (void)alignTop {</p>
-
-<pre><code>CGSize fontSize = [self.text sizeWithFont:self.font];
-double finalHeight = fontSize.height * self.numberOfLines;
-double finalWidth = self.frame.size.width;    //expected width of label
-CGSize theStringSize = [self.text sizeWithFont:self.font constrainedToSize:CGSizeMake(finalWidth, finalHeight) lineBreakMode:self.lineBreakMode];
-int newLinesToPad = (finalHeight  - theStringSize.height) / fontSize.height;
-for(int i=0; i&lt;newLinesToPad; i++)
-    self.text = [self.text stringByAppendingString:@"\n "];
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li>(void)alignBottom {
-  CGSize fontSize = [self.text sizeWithFont:self.font];
-  double finalHeight = fontSize.height * self.numberOfLines;
-  double finalWidth = self.frame.size.width;    //expected width of label
-  CGSize theStringSize = [self.text sizeWithFont:self.font constrainedToSize:CGSizeMake(finalWidth, finalHeight) lineBreakMode:self.lineBreakMode];
-  int newLinesToPad = (finalHeight  &ndash; theStringSize.height) / fontSize.height;
-  for(int i=0; i&lt;newLinesToPad; i++)
-      self.text = [NSString stringWithFormat:@&ldquo; \n%@&rdquo;,self.text];
-}
-@end
-```
-然后，调用即可。</li>
-</ul>
-
-
-<h4>参考资料</h4>
-
-<p><a href="http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/">http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[dyld:lazy symbol bingding failed:Symbol not found 问题的解决]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue/"/>
-    <updated>2013-08-06T16:44:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue</id>
-    <content type="html"><![CDATA[<p>遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic
-  Referenced from: /Users/imove-1/Library/Application Support/iPhone Simulator/5.1/Applications/24E4730A-9DB0-44F7-97E0-2D08F4AEC9DD/iMove.app/iMove<br/>
-  Expected in: /Applications/Xcode.app/Contents/Developer/<br/>Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk/System/Library/<br/>Frameworks/Foundation.framework/Foundation</p>
-
-<p>  经过一番研究，发现出错原因：项目中，我是用cocoapods管理第三方包的。其中第三方包SwipeView的iOS Deployment Target 默认为iOS 6.1，改成4.3就可以了。</p>
-
-<p><img src="/images/dyld_lazy_symbol.jpeg"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[IOS获得广播地址]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/"/>
-    <updated>2013-08-05T16:13:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi</id>
-    <content type="html"><![CDATA[<p>最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：</p>
-
-<h4>1、</h4>
-
-<p>``` objc</p>
-
-<h1>include &lt;sys/types.h></h1>
-
-<h1>include &lt;sys/socket.h></h1>
-
-<h1>include &lt;ifaddrs.h></h1>
-
-<h1>include &lt;arpa/inet.h></h1>
-
-<ul>
-<li>(NSString <em>)getBroadcastAddress
-{
-  NSString </em>broadCastAddress = @&ldquo;&rdquo;;
-  struct ifaddrs <em>interfaces = NULL;
-  struct ifaddrs </em>temp_addr = NULL;
-  int success = 0;
-  // retrieve the current interfaces &ndash; returns 0 on success
-  success = getifaddrs(&amp;interfaces);
-   if (success == 0) {
-      temp_addr = interfaces;
-    while(temp_addr != NULL)
-      {
-          // check if interface is en0 which is the wifi connection on the iPhone
-          if(temp_addr->ifa_addr->sa_family == AF_INET)
-          {
-              if([[NSString stringWithUTF8String:temp_addr->ifa_name]                isEqualToString:@&ldquo;en0&rdquo;])
-              {
-                  broadCastAddress = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_dstaddr)&ndash;>sin_addr)];
-    }
-   }
-     temp_addr = temp_addr->ifa_next;
-      }
-  }
-    freeifaddrs(interfaces);
-    return broadCastAddress;
-}
-```
-
-<h4>2、</h4>
-
-<p>需要在xcode该工程里配置
-<img src="/images/broadcastaddr_setting.jpeg">
-加入CFNetwork.framework、SystemConfiguration.framework</p></li>
-</ul>
-
+<p><img src="/images/svnHistory.png"></p>
 ]]></content>
   </entry>
   
