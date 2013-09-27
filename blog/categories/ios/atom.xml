@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-09-05T16:50:42+08:00</updated>
+  <updated>2013-09-27T14:38:21+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,52 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[xcode中引入两个静态库冲突'duplicate symbol'的解决方法]]></title>
+    <link href="http://bbconan.github.io/blog/2013/09/27/xcodezhong-yin-ru-liang-ge-jing-tai-ku-chong-tu-duplicate-symbol-de-jie-jue-fang-fa/"/>
+    <updated>2013-09-27T14:17:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/09/27/xcodezhong-yin-ru-liang-ge-jing-tai-ku-chong-tu-duplicate-symbol-de-jie-jue-fang-fa</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;在开发过程中，可能需要引入第三方的静态库，有时候会出现duplicate symbol的错误。例如:duplicate symbol <em>OBJC_METACLASS</em>$_Reachability in:/你的xcode路径/DerivedData/iMove-cwhkpttlcvtnivfvakvpiakhvoak/Build/Products/Debug-iphoneos/libPods.a(Reachability.o)<br>/你的项目路径/libVParser.a(Reachability.o)<br>
+ld: 208 duplicate symbols for architecture armv7<br>
+clang: error: linker command failed with exit code 1 (use -v to see invocation)</p>
+
+<!--more -->
+
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这里有个解决方法：如果静态库结构一样，可以将2个库合并或者将其中1个库中重复的.o文件删除。下面以删除libVParser.a重复的.o文件为例。打开终端。<br></p>
+
+<h5>1、、首先，查看文件结构<br></h5>
+
+<p>输入 lipo -info libVParser.a<br>
+结果
+Architectures in the fat file: libVParser.a are: armv7 (cputype (12) cpusubtype (11))</p>
+
+<h5>2、将armv7解压出来<br></h5>
+
+<p>输入
+lipo libVParser.a -thin armv7 -output libVParser-armv7.a</p>
+
+<h4>3、新建一个文件夹存放解压出来的.o文件 <br></h4>
+
+<p> 输入 mkdir armv7 <br>
+ 输入 cd armv7</p>
+
+<h5>4、将静态库文件解压 <br></h5>
+
+<p>输入
+ar -x ../libVParser-armv7.a</p>
+
+<h5>5、删除重复的.o文件(如果是合并静态库的话，把另一个静态库按同样步骤解压。然后，对比，那些文件可以合并。)</h5>
+
+<h5>6、删除（合并）完后，进行打包。<br></h5>
+
+<p>输入
+libtool -static -o ../libnewVPaser.a *.o <br></p>
+
+<p>此时，用新生成的静态库文件就可以正常编译了。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[我的代码历史可视化]]></title>
@@ -137,21 +183,6 @@ for(int i=0; i&lt;newLinesToPad; i++)
 <h4>参考资料</h4>
 
 <p><a href="http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/">http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[dyld:lazy symbol bingding failed:Symbol not found 问题的解决]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue/"/>
-    <updated>2013-08-06T16:44:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue</id>
-    <content type="html"><![CDATA[<p>遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic
-  Referenced from: /Users/imove-1/Library/Application Support/iPhone Simulator/5.1/Applications/24E4730A-9DB0-44F7-97E0-2D08F4AEC9DD/iMove.app/iMove<br/>
-  Expected in: /Applications/Xcode.app/Contents/Developer/<br/>Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk/System/Library/<br/>Frameworks/Foundation.framework/Foundation</p>
-
-<p>  经过一番研究，发现出错原因：项目中，我是用cocoapods管理第三方包的。其中第三方包SwipeView的iOS Deployment Target 默认为iOS 6.1，改成4.3就可以了。</p>
-
-<p><img src="/images/dyld_lazy_symbol.jpeg"></p>
 ]]></content>
   </entry>
   
