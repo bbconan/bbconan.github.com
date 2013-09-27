@@ -3,7 +3,7 @@ layout: post
 title: "设置UILabel文字顶部对齐"
 date: 2013-08-07 14:45
 comments: true
-categories: IOS
+categories: iOS
 ---
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter三种设置水平方向的文字对齐方式。那怎么做，可以是文字顶部对齐呢？下面有两种方法：
 <!--more-->

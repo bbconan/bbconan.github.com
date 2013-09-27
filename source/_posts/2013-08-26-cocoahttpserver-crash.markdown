@@ -3,7 +3,7 @@ layout: post
 title: "CocoaHTTPServer出现Crash的解决方法"
 date: 2013-08-26 17:33
 comments: true
-categories: IOS
+categories: iOS
 ---
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。<br>

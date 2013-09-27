@@ -3,7 +3,7 @@ layout: post
 title: "IOS获得广播地址"
 date: 2013-08-05 16:13
 comments: true
-categories: IOS
+categories: iOS
 ---
 最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：
 ####1、

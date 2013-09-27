@@ -3,7 +3,7 @@ layout: post
 title: "HMAC_SHA1算法的object-c实现"
 date: 2013-08-08 15:26
 comments: true
-categories: IOS
+categories: iOS
 ---
 做项目时，用到HMAC_SHA1算法。代码实现，如下：
 ``` objc
