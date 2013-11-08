@@ -4,7 +4,7 @@
   <title><![CDATA[Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-09-27T14:38:21+08:00</updated>
+  <updated>2013-11-08T15:10:44+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx]]></title>
+    <link href="http://bbconan.github.io/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx/"/>
+    <updated>2013-11-08T14:48:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;近期开发过程中，遇到一个“[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx”的bug，google了很长时间也没找到原因所在。后来，发现<a href="http://www.91r.net/ask/11318138.html"> 点击此处</a>，这里面所遇到的bug和我的类似。其中，这段话</p>
+When setting buttonColor = bc without retaining, buttonColor will become a dangling pointer when the current autorelease pool flushes (assuming it&rsquo;s not retained elsewhere).</p>
+
+<p>[self setNeedsDisplay] will invoke drawRect: later and at that point, buttonColor may already have been deallocated which will crash your app when referring to it.</p>
+说明问题所在:当设置完color后，是自动释放的（autorelease）。下次，调用 [self setNeedsDisplay]后，调用drawRect 方法时，里面的color已经被释放了。所以我的解决办法是在设置 self.color = color 后，紧接着
+[self.color retain]。</p>
+
+<p>参考地址：<a href="http://www.91r.net/ask/11318138.html">http://www.91r.net/ask/11318138.html</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[xcode中引入两个静态库冲突'duplicate symbol'的解决方法]]></title>

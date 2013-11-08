@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS | Home Of Code Monkey]]></title>
   <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://bbconan.github.io/"/>
-  <updated>2013-09-27T14:38:21+08:00</updated>
+  <updated>2013-11-08T15:10:44+08:00</updated>
   <id>http://bbconan.github.io/</id>
   <author>
     <name><![CDATA[conan]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx]]></title>
+    <link href="http://bbconan.github.io/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx/"/>
+    <updated>2013-11-08T14:48:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;近期开发过程中，遇到一个“[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx”的bug，google了很长时间也没找到原因所在。后来，发现<a href="http://www.91r.net/ask/11318138.html"> 点击此处</a>，这里面所遇到的bug和我的类似。其中，这段话</p>
+When setting buttonColor = bc without retaining, buttonColor will become a dangling pointer when the current autorelease pool flushes (assuming it&rsquo;s not retained elsewhere).</p>
+
+<p>[self setNeedsDisplay] will invoke drawRect: later and at that point, buttonColor may already have been deallocated which will crash your app when referring to it.</p>
+说明问题所在:当设置完color后，是自动释放的（autorelease）。下次，调用 [self setNeedsDisplay]后，调用drawRect 方法时，里面的color已经被释放了。所以我的解决办法是在设置 self.color = color 后，紧接着
+[self.color retain]。</p>
+
+<p>参考地址：<a href="http://www.91r.net/ask/11318138.html">http://www.91r.net/ask/11318138.html</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[xcode中引入两个静态库冲突'duplicate symbol'的解决方法]]></title>
@@ -115,74 +131,6 @@ return hash;
 <p>}
 ```
 这里用到NSData类别:<a href="https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/">https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[设置UILabel文字顶部对齐]]></title>
-    <link href="http://bbconan.github.io/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi/"/>
-    <updated>2013-08-07T14:45:00+08:00</updated>
-    <id>http://bbconan.github.io/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi</id>
-    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter三种设置水平方向的文字对齐方式。那怎么做，可以是文字顶部对齐呢？下面有两种方法：</p>
-
-<!--more-->
-
-
-<h3>方法一</h3>
-
-<p>1、label先设置完text内容，即[label setText:@&ldquo;你好&rdquo;]。</p>
-
-<p>2、label然后调用sizeToFit方法，即[label sizeToFit]。</p>
-
-<p>由于label已经是文字的高度和宽度了，所以此时已经顶部对齐。</p>
-
-<h3>方法二</h3>
-
-<p>最正统的方法，利用object-c的category特性，修改UILabel的代码。如下 :
-``` objc
-// &mdash; file: UILabel+VerticalAlign.h</p>
-
-<h1>pragma mark VerticalAlign</h1>
-
-<p>@interface UILabel (VerticalAlign)
-&ndash; (void)alignTop;
-&ndash; (void)alignBottom;
-@end</p>
-
-<p>// &mdash; file: UILabel+VerticalAlign.m
-@implementation UILabel (VerticalAlign)
-&ndash; (void)alignTop {</p>
-
-<pre><code>CGSize fontSize = [self.text sizeWithFont:self.font];
-double finalHeight = fontSize.height * self.numberOfLines;
-double finalWidth = self.frame.size.width;    //expected width of label
-CGSize theStringSize = [self.text sizeWithFont:self.font constrainedToSize:CGSizeMake(finalWidth, finalHeight) lineBreakMode:self.lineBreakMode];
-int newLinesToPad = (finalHeight  - theStringSize.height) / fontSize.height;
-for(int i=0; i&lt;newLinesToPad; i++)
-    self.text = [self.text stringByAppendingString:@"\n "];
-</code></pre>
-
-<p>}</p>
-
-<ul>
-<li>(void)alignBottom {
-  CGSize fontSize = [self.text sizeWithFont:self.font];
-  double finalHeight = fontSize.height * self.numberOfLines;
-  double finalWidth = self.frame.size.width;    //expected width of label
-  CGSize theStringSize = [self.text sizeWithFont:self.font constrainedToSize:CGSizeMake(finalWidth, finalHeight) lineBreakMode:self.lineBreakMode];
-  int newLinesToPad = (finalHeight  &ndash; theStringSize.height) / fontSize.height;
-  for(int i=0; i&lt;newLinesToPad; i++)
-      self.text = [NSString stringWithFormat:@&ldquo; \n%@&rdquo;,self.text];
-}
-@end
-```
-然后，调用即可。</li>
-</ul>
-
-
-<h4>参考资料</h4>
-
-<p><a href="http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/">http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/</a></p>
 ]]></content>
   </entry>
   

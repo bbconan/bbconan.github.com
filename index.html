@@ -9,7 +9,7 @@
   <meta name="author" content="conan">
 
   
-  <meta name="description" content="&nbsp;&nbsp;&nbsp;&nbsp;在开发过程中，可能需要引入第三方的静态库，有时候会出现duplicate symbol的错误。例如:duplicate symbol OBJC_METACLASS$_Reachability in:/你的xcode路径/DerivedData/ &hellip;">
+  <meta name="description" content="&nbsp;&nbsp;&nbsp;&nbsp;近期开发过程中，遇到一个“[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx”的bug，google了很长时间也没找到原因所在。后来，发现 点击此处， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -63,6 +63,49 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx/">[UIDeviceRGBColor CGColor]: Message Sent to Deallocated Instance Xxx</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-08T14:48:00+08:00" pubdate data-updated="true">Nov 8<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>&nbsp;&nbsp;&nbsp;&nbsp;近期开发过程中，遇到一个“[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx”的bug，google了很长时间也没找到原因所在。后来，发现<a href="http://www.91r.net/ask/11318138.html"> 点击此处</a>，这里面所遇到的bug和我的类似。其中，这段话</p>
+When setting buttonColor = bc without retaining, buttonColor will become a dangling pointer when the current autorelease pool flushes (assuming it&rsquo;s not retained elsewhere).</p>
+
+<p>[self setNeedsDisplay] will invoke drawRect: later and at that point, buttonColor may already have been deallocated which will crash your app when referring to it.</p>
+说明问题所在:当设置完color后，是自动释放的（autorelease）。下次，调用 [self setNeedsDisplay]后，调用drawRect 方法时，里面的color已经被释放了。所以我的解决办法是在设置 self.color = color 后，紧接着
+[self.color retain]。</p>
+
+<p>参考地址：<a href="http://www.91r.net/ask/11318138.html">http://www.91r.net/ask/11318138.html</a></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -522,6 +565,10 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)<
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx/">[UIDeviceRGBColor CGColor]: Message Sent to Deallocated Instance Xxx</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/27/xcodezhong-yin-ru-liang-ge-jing-tai-ku-chong-tu-duplicate-symbol-de-jie-jue-fang-fa/">Xcode中引入两个静态库冲突&#8217;duplicate Symbol&#8217;的解决方法</a>
       </li>
     
@@ -537,19 +584,15 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)<
         <a href="/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/">HMAC_SHA1算法的object-c实现</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi/">设置UILabel文字顶部对齐</a>
-      </li>
-    
   </ul>
 </section>
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/ios' style='font-size: 160.0%'>iOS(7)</a> <a href='/blog/categories/za-tan' style='font-size: 108.57142857142857%'>杂谈(1)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/ios' style='font-size: 160.0%'>iOS(8)</a> <a href='/blog/categories/za-tan' style='font-size: 107.5%'>杂谈(1)</a> </span>
 </section>
 <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/ios/'>iOS (7)</a></li><li><a href='/blog/categories/za-tan/'>杂谈 (1)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/ios/'>iOS (8)</a></li><li><a href='/blog/categories/za-tan/'>杂谈 (1)</a></li></ul>
 </section>
 
 
