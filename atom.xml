@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Home Of Code Monkey]]></title>
+  <link href="http://bbconan.github.io/atom.xml" rel="self"/>
+  <link href="http://bbconan.github.io/"/>
+  <updated>2013-11-08T15:10:44+08:00</updated>
+  <id>http://bbconan.github.io/</id>
+  <author>
+    <name><![CDATA[conan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx]]></title>
+    <link href="http://bbconan.github.io/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx/"/>
+    <updated>2013-11-08T14:48:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/11/08/uidevicergbcolor-cgcolor-message-sent-to-deallocated-instance-xxx</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;近期开发过程中，遇到一个“[UIDeviceRGBColor CGColor]: message sent to deallocated instance xxx”的bug，google了很长时间也没找到原因所在。后来，发现<a href="http://www.91r.net/ask/11318138.html"> 点击此处</a>，这里面所遇到的bug和我的类似。其中，这段话</p>
+When setting buttonColor = bc without retaining, buttonColor will become a dangling pointer when the current autorelease pool flushes (assuming it&rsquo;s not retained elsewhere).</p>
+
+<p>[self setNeedsDisplay] will invoke drawRect: later and at that point, buttonColor may already have been deallocated which will crash your app when referring to it.</p>
+说明问题所在:当设置完color后，是自动释放的（autorelease）。下次，调用 [self setNeedsDisplay]后，调用drawRect 方法时，里面的color已经被释放了。所以我的解决办法是在设置 self.color = color 后，紧接着
+[self.color retain]。</p>
+
+<p>参考地址：<a href="http://www.91r.net/ask/11318138.html">http://www.91r.net/ask/11318138.html</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[xcode中引入两个静态库冲突'duplicate symbol'的解决方法]]></title>
+    <link href="http://bbconan.github.io/blog/2013/09/27/xcodezhong-yin-ru-liang-ge-jing-tai-ku-chong-tu-duplicate-symbol-de-jie-jue-fang-fa/"/>
+    <updated>2013-09-27T14:17:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/09/27/xcodezhong-yin-ru-liang-ge-jing-tai-ku-chong-tu-duplicate-symbol-de-jie-jue-fang-fa</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;在开发过程中，可能需要引入第三方的静态库，有时候会出现duplicate symbol的错误。例如:duplicate symbol <em>OBJC_METACLASS</em>$_Reachability in:/你的xcode路径/DerivedData/iMove-cwhkpttlcvtnivfvakvpiakhvoak/Build/Products/Debug-iphoneos/libPods.a(Reachability.o)<br>/你的项目路径/libVParser.a(Reachability.o)<br>
+ld: 208 duplicate symbols for architecture armv7<br>
+clang: error: linker command failed with exit code 1 (use -v to see invocation)</p>
+
+<!--more -->
+
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这里有个解决方法：如果静态库结构一样，可以将2个库合并或者将其中1个库中重复的.o文件删除。下面以删除libVParser.a重复的.o文件为例。打开终端。<br></p>
+
+<h5>1、、首先，查看文件结构<br></h5>
+
+<p>输入 lipo -info libVParser.a<br>
+结果
+Architectures in the fat file: libVParser.a are: armv7 (cputype (12) cpusubtype (11))</p>
+
+<h5>2、将armv7解压出来<br></h5>
+
+<p>输入
+lipo libVParser.a -thin armv7 -output libVParser-armv7.a</p>
+
+<h4>3、新建一个文件夹存放解压出来的.o文件 <br></h4>
+
+<p> 输入 mkdir armv7 <br>
+ 输入 cd armv7</p>
+
+<h5>4、将静态库文件解压 <br></h5>
+
+<p>输入
+ar -x ../libVParser-armv7.a</p>
+
+<h5>5、删除重复的.o文件(如果是合并静态库的话，把另一个静态库按同样步骤解压。然后，对比，那些文件可以合并。)</h5>
+
+<h5>6、删除（合并）完后，进行打包。<br></h5>
+
+<p>输入
+libtool -static -o ../libnewVPaser.a *.o <br></p>
+
+<p>此时，用新生成的静态库文件就可以正常编译了。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我的代码历史可视化]]></title>
+    <link href="http://bbconan.github.io/blog/2013/09/05/wo-de-dai-ma-li-shi-ke-shi-hua/"/>
+    <updated>2013-09-05T16:40:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/09/05/wo-de-dai-ma-li-shi-ke-shi-hua</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近，我看到一个非常好玩的东西<a href="https://code.google.com/p/gource/">Gource</a>。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gource可以将代码版本控制系统里面的日志全部可视化， 所谓可视化就是可以看见每个成员在系统里面提交代码的行为。 Gource目前支持git/hg/svn，cvs通过一个简单的脚本也可以被Gource支持。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我将我的项目生成可视化效果截图：<br></p>
+
+<!--more-->
+
+
+<p><img src="http://bbconan.github.io/images/svnHistory.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[CocoaHTTPServer出现Crash的解决方法]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash/"/>
+    <updated>2013-08-26T17:33:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/26/cocoahttpserver-crash</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最近工程中，需要使用httpserver，就用了CocoaHTTPServer。代码的整合非常容易。但是运行后用浏览器连接服务器时，程序会 crash。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;最后发现是在 HTTPConnection::filePathForURI 函数中 config 的 documentroot 是空的，调试好久。然后，通过研究和搜索，发现最新版的CocoaHTTPServer用的是ARC。解决办法就是：选择项目 target，Build Phases &ndash;> Compile Sources 中，给所有 CocoaHTTPServer 的代码添加 Compiler Flags ： -fobjc-arc 即可。
+<img src="http://bbconan.github.io/images/cocoahttpserver_crash.png"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HMAC_SHA1算法的object-c实现]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian/"/>
+    <updated>2013-08-08T15:26:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/08/hmac-sha1suan-fa-de-object-cshi-xian</id>
+    <content type="html"><![CDATA[<p>做项目时，用到HMAC_SHA1算法。代码实现，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">HMAC_SHA1</span> <span class="o">=</span> <span class="s">@&quot;HmacSHA1&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">static</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">APPKEY</span> <span class="o">=</span> <span class="s">@&quot;123456&quot;</span><span class="p">;</span><span class="c1">//这是key</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">generateSignature:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">data</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cKey</span> <span class="o">=</span> <span class="p">[</span><span class="n">APPKEY</span> <span class="nl">cStringUsingEncoding:</span><span class="n">NSASCIIStringEncoding</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">cData</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span> <span class="nl">cStringUsingEncoding:</span><span class="n">NSASCIIStringEncoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">cHMAC</span><span class="p">[</span><span class="n">CC_SHA1_DIGEST_LENGTH</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CCHmac</span><span class="p">(</span><span class="n">kCCHmacAlgSHA1</span><span class="p">,</span> <span class="n">cKey</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">cKey</span><span class="p">),</span> <span class="n">cData</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">cData</span><span class="p">),</span> <span class="n">cHMAC</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSData</span> <span class="o">*</span><span class="n">HMAC</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">NSData</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithBytes:</span><span class="n">cHMAC</span> <span class="nl">length:</span><span class="k">sizeof</span><span class="p">(</span><span class="n">cHMAC</span><span class="p">)]</span> <span class="n">autorelease</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">hash</span> <span class="o">=</span> <span class="p">[</span><span class="n">HMAC</span> <span class="n">base64Encoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">hash</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这里用到NSData类别:<a href="https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/">https://github.com/WideTag/WideNoise-iOS/blob/master/WideNoise/Categories/NSData%2BBase64Encoding.m/</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[设置UILabel文字顶部对齐]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi/"/>
+    <updated>2013-08-07T14:45:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/07/she-zhi-uilabelding-bu-dui-qi</id>
+    <content type="html"><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xcode中UILabel是默认垂直居中的。UILabel拥有textAlignment属性，可以用NSTextAlignmentLeft, NSTextAlignmentRight, NSTextAlignmentCenter三种设置水平方向的文字对齐方式。那怎么做，可以是文字顶部对齐呢？下面有两种方法：</p>
+
+<!--more-->
+
+
+<h3>方法一</h3>
+
+<p>1、label先设置完text内容，即[label setText:@&ldquo;你好&rdquo;]。</p>
+
+<p>2、label然后调用sizeToFit方法，即[label sizeToFit]。</p>
+
+<p>由于label已经是文字的高度和宽度了，所以此时已经顶部对齐。</p>
+
+<h3>方法二</h3>
+
+<p>最正统的方法，利用object-c的category特性，修改UILabel的代码。如下 :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// -- file: UILabel+VerticalAlign.h</span>
+</span><span class='line'><span class="cp">#pragma mark VerticalAlign</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">UILabel</span> <span class="nl">(VerticalAlign)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignTop</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignBottom</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// -- file: UILabel+VerticalAlign.m</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">UILabel</span> <span class="nl">(VerticalAlign)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignTop</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CGSize</span> <span class="n">fontSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">double</span> <span class="n">finalHeight</span> <span class="o">=</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">self</span><span class="p">.</span><span class="n">numberOfLines</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">double</span> <span class="n">finalWidth</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>    <span class="c1">//expected width of label</span>
+</span><span class='line'>    <span class="n">CGSize</span> <span class="n">theStringSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span> <span class="nl">constrainedToSize:</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">finalWidth</span><span class="p">,</span> <span class="n">finalHeight</span><span class="p">)</span> <span class="nl">lineBreakMode:</span><span class="n">self</span><span class="p">.</span><span class="n">lineBreakMode</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">newLinesToPad</span> <span class="o">=</span> <span class="p">(</span><span class="n">finalHeight</span>  <span class="o">-</span> <span class="n">theStringSize</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">newLinesToPad</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">stringByAppendingString:</span><span class="s">@&quot;</span><span class="se">\n</span><span class="s"> &quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alignBottom</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CGSize</span> <span class="n">fontSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">double</span> <span class="n">finalHeight</span> <span class="o">=</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">self</span><span class="p">.</span><span class="n">numberOfLines</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">double</span> <span class="n">finalWidth</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>    <span class="c1">//expected width of label</span>
+</span><span class='line'>    <span class="n">CGSize</span> <span class="n">theStringSize</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">self</span><span class="p">.</span><span class="n">font</span> <span class="nl">constrainedToSize:</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">finalWidth</span><span class="p">,</span> <span class="n">finalHeight</span><span class="p">)</span> <span class="nl">lineBreakMode:</span><span class="n">self</span><span class="p">.</span><span class="n">lineBreakMode</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">newLinesToPad</span> <span class="o">=</span> <span class="p">(</span><span class="n">finalHeight</span>  <span class="o">-</span> <span class="n">theStringSize</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="n">fontSize</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">newLinesToPad</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot; </span><span class="se">\n</span><span class="s">%@&quot;</span><span class="p">,</span><span class="n">self</span><span class="p">.</span><span class="n">text</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后，调用即可。</p>
+
+<h4>参考资料</h4>
+
+<p><a href="http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/">http://blog.devtang.com/blog/2011/11/20/set-uilabel-text-align-top/</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[dyld:lazy symbol bingding failed:Symbol not found 问题的解决]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue/"/>
+    <updated>2013-08-06T16:44:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/06/dyld-lazy-symbol-bingding-failed-symbol-not-found-wen-ti-de-jie-jue</id>
+    <content type="html"><![CDATA[<p>遇到这么一个蛋疼的问题：dyld: lazy symbol binding failed: Symbol not found: _objc_setProperty_nonatomic
+  Referenced from: /Users/imove-1/Library/Application Support/iPhone Simulator/5.1/Applications/24E4730A-9DB0-44F7-97E0-2D08F4AEC9DD/iMove.app/iMove<br/>
+  Expected in: /Applications/Xcode.app/Contents/Developer/<br/>Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk/System/Library/<br/>Frameworks/Foundation.framework/Foundation</p>
+
+<p>  经过一番研究，发现出错原因：项目中，我是用cocoapods管理第三方包的。其中第三方包SwipeView的iOS Deployment Target 默认为iOS 6.1，改成4.3就可以了。</p>
+
+<p><img src="http://bbconan.github.io/images/dyld_lazy_symbol.jpeg"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[IOS获得广播地址]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi/"/>
+    <updated>2013-08-05T16:13:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/05/ioshuo-de-yan-bo-di-zhi</id>
+    <content type="html"><![CDATA[<p>最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：</p>
+
+<h4>1、</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/socket.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;ifaddrs.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;arpa/inet.h&gt;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">getBroadcastAddress</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">broadCastAddress</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">interfaces</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">temp_addr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">success</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// retrieve the current interfaces - returns 0 on success</span>
+</span><span class='line'>    <span class="n">success</span> <span class="o">=</span> <span class="n">getifaddrs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">interfaces</span><span class="p">);</span>
+</span><span class='line'>     <span class="k">if</span> <span class="p">(</span><span class="n">success</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">temp_addr</span> <span class="o">=</span> <span class="n">interfaces</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">temp_addr</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// check if interface is en0 which is the wifi connection on the iPhone</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="o">-&gt;</span><span class="n">sa_family</span> <span class="o">==</span> <span class="n">AF_INET</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">if</span><span class="p">([[</span><span class="n">NSString</span> <span class="nl">stringWithUTF8String:</span><span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_name</span><span class="p">]</span>                <span class="nl">isEqualToString:</span><span class="s">@&quot;en0&quot;</span><span class="p">])</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="n">broadCastAddress</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithUTF8String:</span><span class="n">inet_ntoa</span><span class="p">(((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_dstaddr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">)];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>     <span class="p">}</span>
+</span><span class='line'>       <span class="n">temp_addr</span> <span class="o">=</span> <span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_next</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>      <span class="n">freeifaddrs</span><span class="p">(</span><span class="n">interfaces</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">broadCastAddress</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2、</h4>
+
+<p>需要在xcode该工程里配置
+<img src="http://bbconan.github.io/images/broadcastaddr_setting.jpeg">
+加入CFNetwork.framework、SystemConfiguration.framework</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/05/hello-world/"/>
+    <updated>2013-08-05T15:58:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/05/hello-world</id>
+    <content type="html"><![CDATA[<p>Hello World</p>
+]]></content>
+  </entry>
+  
+</feed>

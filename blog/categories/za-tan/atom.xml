@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 杂谈 | Home Of Code Monkey]]></title>
+  <link href="http://bbconan.github.io/blog/categories/za-tan/atom.xml" rel="self"/>
+  <link href="http://bbconan.github.io/"/>
+  <updated>2013-11-08T15:10:44+08:00</updated>
+  <id>http://bbconan.github.io/</id>
+  <author>
+    <name><![CDATA[conan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://bbconan.github.io/blog/2013/08/05/hello-world/"/>
+    <updated>2013-08-05T15:58:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2013/08/05/hello-world</id>
+    <content type="html"><![CDATA[<p>Hello World</p>
+]]></content>
+  </entry>
+  
+</feed>
