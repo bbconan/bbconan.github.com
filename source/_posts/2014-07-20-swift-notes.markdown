@@ -3,7 +3,7 @@ layout: post
 title: "记录碰到的几个问题"
 date: 2014-07-20 18:08
 comments: true
-categories: 
+categories: iOS
 ---
 ####1、在ASIFormDataRequest的方法中，使用block的一个问题
 ```objc
