@@ -37,3 +37,4 @@ text.boundingRectWithSize(CGSizeMake(w, CGFloat.max), options: NSStringDrawingOp
 let boundingRect = "string".boundingRectWithSize(size, options: StringDrawingOptions.combine(.UsesLineFragmentOrigin, with: .UsesFontLeading), attributes:nil, context:nil)
 ```
 
+
