@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Effective Objective-C 2.0 读书笔记2 | iOS技术博客</title>
+  <meta name="author" content="王传煦">
+  
+  <meta name="description" content="二、对象、消息和运行时①、直接访问实例变量还是使用属性方法访问?(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视cop">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Effective Objective-C 2.0 读书笔记2"/>
+  <meta property="og:site_name" content="iOS技术博客"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="iOS技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" type="text/css">
+<link rel="stylesheet" href="/css/style.css" type="text/css">
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-368771XX-X']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+<body>
+  <header id="header" class='normal_mode'>
+    <nav id="main-nav">
+  <ul class='container'>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+  </header>
+  <div id="content" class="container">
+    <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2015-03-14T06:48:00.000Z"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">2015 Mar 14,Sat, 2:48:00 pm</a></time>
+
+  
+    <h1 class="title">Effective Objective-C 2.0 读书笔记2</h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h1 id="二、对象、消息和运行时">二、对象、消息和运行时</h1><h2 id="①、直接访问实例变量还是使用属性方法访问?">①、直接访问实例变量还是使用属性方法访问?<br></h2><h4 id="(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。">(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。<br></h4><h4 id="(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视copy，不会产生一个复制。">(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视copy，不会产生一个复制。<br></h4><h4 id="(3)、直接访问实例变量，不会出发KVO通知。因为KVO是改写了别观察属性的set方法，在变化前和变化后，发送通知。具体文章可以猛击这里。一个妥协的解决方案是，读数据时采用直接访问方式，写数据时采用属性方法setXXX方式。这样，既可以保证读取速度，又能保证写数据时的内存管理策略的正确性。">(3)、直接访问实例变量，不会出发KVO通知。因为KVO是改写了别观察属性的set方法，在变化前和变化后，发送通知。具体文章可以<a href="http://tech.glowing.com/cn/implement-kvo/" target="_blank" rel="external">猛击这里</a>。一个妥协的解决方案是，读数据时采用直接访问方式，写数据时采用属性方法setXXX方式。这样，既可以保证读取速度，又能保证写数据时的内存管理策略的正确性。<br></h4><h4 id="(4)、在initializers和dealloc等方法中，用直接访问的方式来读、写实例变量。">(4)、在initializers和dealloc等方法中，用直接访问的方式来读、写实例变量。<br></h4><h4 id="(5)、当属性是懒加载模式时，需要用属性方法getXXX来读取。">(5)、当属性是懒加载模式时，需要用属性方法getXXX来读取。</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSString</span> *)name &#123;</span><br><span class="line">	<span class="keyword">if</span> (!_name) &#123;</span><br><span class="line">		_name = <span class="string">@"测试名字"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> _name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="②、对象相等，必须有相同的hash值。拥有相同hash值的对象，不必相等。">②、对象相等，必须有相同的hash值。拥有相同hash值的对象，不必相等。</h2><h2 id="③、类簇模式是抽象工厂模式的一种。">③、类簇模式是抽象工厂模式的一种。</h2><h2 id="④、消息转发">④、消息转发</h2><h4 id="(1)、编译器会把方法转成一个标准的C函数void_objc_msgSend(id_self,SEL_cmd,…)，其中第一个参数是接收者，第二个参数是selector，即方法。">(1)、编译器会把方法转成一个标准的C函数void objc_msgSend(id self,SEL cmd,…)，其中第一个参数是接收者，第二个参数是selector，即方法。<br></h4><h4 id="(2)、方法调用的过程：首先，会在类的方法列表中查找方法。如果找不到，则从继承链上的父类方法中查找。如果还找不到，则进行消息转发。">(2)、方法调用的过程：首先，会在类的方法列表中查找方法。如果找不到，则从继承链上的父类方法中查找。如果还找不到，则进行消息转发。<br></h4><h4 id="(3)、objc_msgSend会缓存已经用过的方法，以方便以后快速调用。即使如此缓存，还是比静态绑定慢。实际情况中，消息分发系统不是应用速度的瓶颈所在。">(3)、objc_msgSend会缓存已经用过的方法，以方便以后快速调用。即使如此缓存，还是比静态绑定慢。实际情况中，消息分发系统不是应用速度的瓶颈所在。<br></h4><h4 id="(4)、消息转发示意图">(4)、消息转发示意图<br></h4><p><img src="/images/msgforward.png"><br><br>其中每一步消息接收者都有一次机会来处理消息。越往后，所花费的开销就越大。<br></p>
+<h4 id="(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。">(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。</h4>
+      
+    </div>
+    <footer>
+      
+          
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tools_1"></a>
+	<a class="jiathis_button_tools_2"></a>
+	<a class="jiathis_button_tools_3"></a>
+	<a class="jiathis_button_tools_4"></a>
+	<a href="http://www.jiathis.com/share?uid=1825414" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1365317553086911" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+<!-- UJian Button BEGIN -->
+	<div class="ujian-hook"></div>
+	<script type="text/javascript" src="http://v1.ujian.cc/code/ujian.js"></script>
+<!-- UJian Button END -->
+
+          <div class="clearfix"></div>
+          <nav id="pagination">
+  
+    <a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/" class="alignleft prev"><i class="fa fa-long-arrow-left"></i>Next</a>
+  
+  
+    <a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/" class="alignright next">Prev<i class="fa fa-long-arrow-right"></i></a>
+  
+  <div class="clearfix"></div>
+</nav>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+  <div id="disqus_thread">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1825414"></script>
+    <!-- UY END -->
+  </div>
+</section>
+
+
+
+
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div>
+  
+  &copy; 2015 王传煦
+  
+</div>
+Powered by <a href="http://zespia.tw/hexo/" title="Hexo" target="_blank" rel="external">Hexo</a> and <a href="http://pages.github.com/" title="GitHub Pages" target="_blank" rel="external">GitHub Pages</a>
+
+<div class="clearfix"></div></footer>
+  
+<script src="/js/jquery.imagesloaded.min.js" type="text/javascript"></script>
+<script src="/js/gallery.js" type="text/javascript"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js" type="text/javascript"></script>
+
+
+
+
+    <script type="text/javascript">
+        (function(){
+
+            $(window).scroll(function(){
+
+                var scrollTop = $(window).scrollTop();
+                if ( scrollTop >200 ){
+                    $("#main-nav").removeClass('normal_mode').addClass('top_mode');
+                } else{
+                    $("#main-nav").removeClass('top_mode').addClass('normal_mode');
+                }
+
+            });
+
+        })();
+    </script>
+
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox({
+      'titlePosition': 'inside'
+    });
+  })(jQuery);
+  </script>
+
+
+
+
+<script type="text/javascript">
+  
+  $(function(){
+
+    $('.title').hover(
+      function() {      
+        $(this).stop().animate(
+          {'marginLeft': '10px'}, 200
+        );   
+      }, 
+      function() {       
+        $(this).stop().animate({'marginLeft': '0px'}, 200);      
+      
+    });   
+
+  });
+
+</script>
+
+
+</body>
+</html>

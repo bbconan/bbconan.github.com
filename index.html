@@ -1,0 +1,768 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS技术博客</title>
+  <meta name="author" content="王传煦">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="iOS技术博客"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="iOS技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" type="text/css">
+<link rel="stylesheet" href="/css/style.css" type="text/css">
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-368771XX-X']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+<body>
+  <header id="header" class='normal_mode'>
+    <nav id="main-nav">
+  <ul class='container'>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+  </header>
+  <div id="content" class="container">
+    <div id="cover">
+	<div id="profile" alt="">
+		<a href="/">
+			<div class="logo">
+				<img src="/logo.png" alt="Profile Picture">
+			</div>
+			<div id="title">iOS技术博客</div>
+		</a>
+
+		
+		 <ul class="my-socials">
+  
+  <li>
+  	<a href="https://github.com/bbconan" class="github" target="_blank">
+  		<i class="fa fa-github"></i>
+  	</a>
+  </li>
+  
+  <li>
+  	<a href="http://weibo.com/1729937805" class="weibo" target="_blank">
+  		<i class="fa fa-weibo"></i>
+  	</a>
+  </li>
+  
+ 
+</ul>
+	</div>
+</div>
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2015-03-30T13:41:00.000Z"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/">2015 Mar 30,Mon, 9:41:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/">Effective Objective-C 2.0 笔记5</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h1 id="五、内存管理">五、内存管理</h1><h2 id="①、当一个对象调用autorelease时，它就会在稍后自行释放，通常是在2个事件loop之间。">①、当一个对象调用autorelease时，它就会在稍后自行释放，通常是在2个事件loop之间。</h2><h2 id="②、在ARC下，仍然需要手动清理非Objective-C对象。例如：CoreFoundation对象或者堆上malloc申请的对象。">②、在ARC下，仍然需要手动清理非Objective-C对象。例如：CoreFoundation对象或者堆上malloc申请的对象。</h2><h2 id="③、不需要调用[super_dealloc]。">③、不需要调用[super dealloc]。<br></h2><p>在生成和运行.cxx_destruct方法的过程中，系统自动调用了super dealloc。所以在ARC下，delloc方法可能是这个样子：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)dealloc &#123;</span><br><span class="line">	<span class="built_in">CFRelease</span>(_coreFoundationObject);</span><br><span class="line">	free(_heapAllocatedMemoryBlob);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="④、在ARC下，系统对于retain、release、autorelease方法进行了优化，使它们不进行Objective-C的消息分发。">④、在ARC下，系统对于retain、release、autorelease方法进行了优化，使它们不进行Objective-C的消息分发。</h2><h2 id="⑤、在ARC下，使用try_catch是很危险的行为。">⑤、在ARC下，使用try catch是很危险的行为。<br></h2><p>因为ARC不会对异常的代码进行内存管理。除非增加大量样板代码来处理这个情况，但是这样没有异常发生又会降低运行时的性能，同时也会显著的增加应用的代码量。</p>
+<h2 id="⑥、一个对象引用它不拥有的对象的例子：代理模式。">⑥、一个对象引用它不拥有的对象的例子：代理模式。</h2><h2 id="⑦、autoreleas_pool可以嵌套。当新增一个autorelease对象时，是加到最内层的。">⑦、autoreleas pool可以嵌套。当新增一个autorelease对象时，是加到最内层的。</h2><h2 id="⑧、autorelease_pool是在栈中申请的，当对一个对象发送autorelease消息时，它就被加到autorelease栈的栈顶。">⑧、autorelease pool是在栈中申请的，当对一个对象发送autorelease消息时，它就被加到autorelease栈的栈顶。</h2><h2 id="⑨、不用对NSString、NSNumber进行retainCount操作。">⑨、不用对NSString、NSNumber进行retainCount操作。<br></h2><p>首先，看个例子：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *string = <span class="string">@"Some string"</span>;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"string retainCount = %lu"</span>,[string retainCount]);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">string retainCount = <span class="number">18446744073709551615</span></span><br></pre></td></tr></table></figure>
+<p>这个数字是2^64-1。因为NSString是单例对象。string是一个编译时常量。这种情况下，编译器会制作一个特殊对象，在应用的二进制文件中替换NSString的数据。<br><br>NSNumber也是类似。用标签指针(tagged pointer)来区分各种类型的数值。在这种模式下，没有NSNumber对象。指针本身的值包含所有关于数字的消息。运行时在消息分发过程中发现一个标签指针，它会装作像一个NSNumber对象一样来操作指针的数值。</p>
+
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2015-03-30T13:19:00.000Z"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-4/">2015 Mar 30,Mon, 9:19:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-4/">Effective Objective-C 2.0 笔记4</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h1 id="四、协议和类别">四、协议和类别</h1><h2 id="①、delegate要用weak修饰，因为可以避免互相引用。">①、delegate要用weak修饰，因为可以避免互相引用。</h2><h2 id="②、利用category可以使继承关系变为可控制的段。">②、利用category可以使继承关系变为可控制的段。</h2><h2 id="③、扩展里可以添加私有方法、私有属性。">③、扩展里可以添加私有方法、私有属性。</h2><h2 id="④、在扩展里添加类的实例变量。">④、在扩展里添加类的实例变量。</h2><h2 id="⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。">⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。</h2><h2 id="⑥、NSDictionary中键值key是copy的，而值value是retain的。">⑥、NSDictionary中键值key是copy的，而值value是retain的。</h2>
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-4/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2015-03-21T05:43:00.000Z"><a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/">2015 Mar 21,Sat, 1:43:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/">Effective Objective-C 2.0 笔记3</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h1 id="三、接口和API设计">三、接口和API设计</h1><h2 id="①、处理一些从网络服务获得的数据时，对应的Model类中对外可见的属性要设为只读，只暴露需要暴露的属性。">①、处理一些从网络服务获得的数据时，对应的Model类中对外可见的属性要设为只读，只暴露需要暴露的属性。</h2><h2 id="②、一种处理方式：在-h文件中，属性设置为readonly；-m文件中，对应的属性设置为readwrite。">②、一种处理方式：在.h文件中，属性设置为readonly；.m文件中，对应的属性设置为readwrite。<br></h2><p>这样的话，就可以在内部进行读写数据操作。但是同时，KVC还是可以设置属性的。因为，即使没有在.h文件中，KVC还是会直接查找有没有setXXX方法。</p>
+<h2 id="③、为可变集合提供方法，而不是把可变集合作为一个直接暴露属性。">③、为可变集合提供方法，而不是把可变集合作为一个直接暴露属性。</h2><h2 id="④、不要是用下划线作为方法前缀，因为下划线是系统保留字。">④、不要是用下划线作为方法前缀，因为下划线是系统保留字。</h2><h2 id="⑤、为什么不提倡使用异常(Exception)?">⑤、为什么不提倡使用异常(Exception)?<br></h2><p>ARC下，异常不是默认安全的。如果在作用域中发生异常，那么后面因该被释放的对象不会被释放。同理，在非ARC下，如果异常在对象释放前发生，那么这个对象永远不会被释放。</p>
+<h2 id="⑥、实现copying协议，需要实现单例方法-_(id)copyWithZone:(NSZone_*)zone">⑥、实现copying协议，需要实现单例方法- (id)copyWithZone:(NSZone *)zone<br></h2><blockquote>
+<p>[NSMutableArray copy] =&gt; NSArray;<br><br> [NSArray mutableCopy] =&gt; NSMutableArray<br></p>
+</blockquote>
+<h2 id="⑦、NSCopying协议中的复制都是浅复制。">⑦、NSCopying协议中的复制都是浅复制。</h2>
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2015-03-14T06:48:00.000Z"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">2015 Mar 14,Sat, 2:48:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">Effective Objective-C 2.0 读书笔记2</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h1 id="二、对象、消息和运行时">二、对象、消息和运行时</h1><h2 id="①、直接访问实例变量还是使用属性方法访问?">①、直接访问实例变量还是使用属性方法访问?<br></h2><h4 id="(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。">(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。<br></h4><h4 id="(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视copy，不会产生一个复制。">(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视copy，不会产生一个复制。<br></h4><h4 id="(3)、直接访问实例变量，不会出发KVO通知。因为KVO是改写了别观察属性的set方法，在变化前和变化后，发送通知。具体文章可以猛击这里。一个妥协的解决方案是，读数据时采用直接访问方式，写数据时采用属性方法setXXX方式。这样，既可以保证读取速度，又能保证写数据时的内存管理策略的正确性。">(3)、直接访问实例变量，不会出发KVO通知。因为KVO是改写了别观察属性的set方法，在变化前和变化后，发送通知。具体文章可以<a href="http://tech.glowing.com/cn/implement-kvo/" target="_blank" rel="external">猛击这里</a>。一个妥协的解决方案是，读数据时采用直接访问方式，写数据时采用属性方法setXXX方式。这样，既可以保证读取速度，又能保证写数据时的内存管理策略的正确性。<br></h4><h4 id="(4)、在initializers和dealloc等方法中，用直接访问的方式来读、写实例变量。">(4)、在initializers和dealloc等方法中，用直接访问的方式来读、写实例变量。<br></h4><h4 id="(5)、当属性是懒加载模式时，需要用属性方法getXXX来读取。">(5)、当属性是懒加载模式时，需要用属性方法getXXX来读取。</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSString</span> *)name &#123;</span><br><span class="line">	<span class="keyword">if</span> (!_name) &#123;</span><br><span class="line">		_name = <span class="string">@"测试名字"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> _name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="②、对象相等，必须有相同的hash值。拥有相同hash值的对象，不必相等。">②、对象相等，必须有相同的hash值。拥有相同hash值的对象，不必相等。</h2><h2 id="③、类簇模式是抽象工厂模式的一种。">③、类簇模式是抽象工厂模式的一种。</h2><h2 id="④、消息转发">④、消息转发</h2><h4 id="(1)、编译器会把方法转成一个标准的C函数void_objc_msgSend(id_self,SEL_cmd,…)，其中第一个参数是接收者，第二个参数是selector，即方法。">(1)、编译器会把方法转成一个标准的C函数void objc_msgSend(id self,SEL cmd,…)，其中第一个参数是接收者，第二个参数是selector，即方法。<br></h4><h4 id="(2)、方法调用的过程：首先，会在类的方法列表中查找方法。如果找不到，则从继承链上的父类方法中查找。如果还找不到，则进行消息转发。">(2)、方法调用的过程：首先，会在类的方法列表中查找方法。如果找不到，则从继承链上的父类方法中查找。如果还找不到，则进行消息转发。<br></h4><h4 id="(3)、objc_msgSend会缓存已经用过的方法，以方便以后快速调用。即使如此缓存，还是比静态绑定慢。实际情况中，消息分发系统不是应用速度的瓶颈所在。">(3)、objc_msgSend会缓存已经用过的方法，以方便以后快速调用。即使如此缓存，还是比静态绑定慢。实际情况中，消息分发系统不是应用速度的瓶颈所在。<br></h4><h4 id="(4)、消息转发示意图">(4)、消息转发示意图<br></h4><p><img src="/images/msgforward.png"><br><br>其中每一步消息接收者都有一次机会来处理消息。越往后，所花费的开销就越大。<br></p>
+<h4 id="(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。">(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。</h4>
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2015-03-05T14:47:00.000Z"><a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/">2015 Mar 5,Thu, 10:47:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/">Effective Objective-C 2.0 读书笔记1</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <p>最近看了一遍<a href="http://book.douban.com/subject/21370593/" target="_blank" rel="external">《Effective Objective-C 2.0:52 Specific Ways to Improve Your iOS and OS X Programs》英文版</a>,感觉受益匪浅，学到了很多以前不了解或者不清楚的知识点。因为英文略让人捉急的原因，所以打算再看一遍这本书，同时看的过程中也做一些笔记。<br></p>
+<h1 id="一、概况">一、概况</h1><h2 id="①、Objective-C对象都是在堆上申请的，而不是栈上。">①、Objective-C对象都是在堆上申请的，而不是栈上。</h2><h2 id="②、不在-h文件中导入，而是在-m文件中导入头文件。">②、不在.h文件中导入，而是在.m文件中导入头文件。<br></h2><p>这样的原因是可以限制其他使用当前类的导入范围。例如：<br><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// EOCPerson.h</span></span><br><span class="line"><span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">EOCEmployer</span>;</span></span><br><span class="line"><span class="comment">//EOCPerson.m</span></span><br><span class="line"><span class="preprocessor">#import “EOCPerson.h<span class="title">"</span><br><span class="line">#import “EOCEmployer.h"</span></span></span><br></pre></td></tr></table></figure></p>
+<p>这样，其他需要导入EOCPerson.h的类，就不需要导入EOCEmployer.h文件了。同时，也可以尽量的避免互相引用。</p>
+<h2 id="③、用类型常量代替＃define来定义常量，因为前者会带有类型信息。">③、用类型常量代替＃define来定义常量，因为前者会带有类型信息。<br></h2><p>如果只在当前类中使用，只需在.m文件中定义static const AClass kVarible = a。如果需要暴露给其他类使用(例如，通知的名字),.h文件  extern NSString <em>const AStringConst;<br>.m文件 NSString </em>const AStringConst = @“a”</p>
+
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2014-11-20T13:15:00.000Z"><a href="/2014/11/20/2014-11-20-zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/">2014 Nov 20,Thu, 9:15:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2014/11/20/2014-11-20-zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/">最近积累的几个Objective-C知识点</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="1、__unused修饰符">1、__unused修饰符</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;__unused宏（事实上是<strong>attribute</strong>((unused))这个GCC的编译器属性，更多请参考<a href="http://nshipster.com/__attribute__/" target="_blank" rel="external">mattt大神的博客</a>）告诉编译器“如果我没用到这个变量，不要警告我”。</p>
+<h3 id="2、三元表达式的简写">2、三元表达式的简写</h3><p>?:是C中唯一一个三目运算符，用来替代简单的if-else语句，同时也是可以两元使用：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *string = inputString ?: <span class="string">@"default"</span>; </span><br><span class="line"><span class="built_in">NSString</span> *string = inputString ? inputString : <span class="string">@"default"</span>; <span class="comment">// 等价</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="3、如果block的参数列表为空的话，相当于可变参数（不是void）。">3、如果block的参数列表为空的话，相当于可变参数（不是void）。</h3><h3 id="4、@compatibility_alias:允许现有类有不同的名称做别名。比如PSTCollectionView使用@compatibility_alias来显著提高对UICollectionView的向后兼容的直接替换的使用体验。(具体可参考NSHipster的文章)">4、@compatibility_alias:允许现有类有不同的名称做别名。比如PSTCollectionView使用@compatibility_alias来显著提高对UICollectionView的向后兼容的直接替换的使用体验。(具体可参考NSHipster的文章)</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 允许代码使用UICollectionView如同它可以在iOS SDK 5使用一样。</span></span><br><span class="line"><span class="comment">// http://developer.apple.com/legacy/mac/library/#documentation/DeveloperTools/gcc-3.3/gcc/compatibility_005falias.html</span></span><br><span class="line"><span class="preprocessor">#if __IPHONE_OS_VERSION_MAX_ALLOWED <span class="title">&lt; 60000</span><br><span class="line">@compatibility_alias UICollectionViewController PSTCollectionViewController; </span><br><span class="line">@compatibility_alias UICollectionView PSTCollectionView;</span><br><span class="line">@compatibility_alias UICollectionReusableView PSTCollectionReusableView;</span><br><span class="line">@compatibility_alias UICollectionViewCell PSTCollectionViewCell; </span><br><span class="line">@compatibility_alias UICollectionViewLayout PSTCollectionViewLayout;</span><br><span class="line">@compatibility_alias UICollectionViewFlowLayout PSTCollectionViewFlowLayout; </span><br><span class="line">@compatibility_alias UICollectionViewLayoutAttributes PSTCollectionViewLayoutAttributes;</span><br><span class="line">@protocol UICollectionViewDataSource &lt;PSTCollectionViewDataSource&gt;</span> @end</span></span><br><span class="line"><span class="class"><span class="keyword">@protocol</span> <span class="title">UICollectionViewDelegate</span> &lt;<span class="title">PSTCollectionViewDelegate</span>&gt; @<span class="title">end</span> </span></span><br><span class="line"><span class="preprocessor">#endif</span></span><br></pre></td></tr></table></figure>
+<h3 id="5、attribute((constructor))">5、<strong>attribute</strong>((constructor))</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;若函数被设定为constructor属性，则该函数会在main（）函数执行之前被自动的执行</p>
+<h3 id="6、看到QQ群里讨论，GCD最多能创建多少线程">6、看到QQ群里讨论，GCD最多能创建多少线程</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;66＝64（GCD线程池的最大值） + 主线程 + 其他随机非GCD线程。<a href="http://stackoverflow.com/questions/7213845/number-of-threads-created-by-gcd" target="_blank" rel="external">来源</a></p>
+<h3 id="7、在Darwin层建立Notification监听的方法">7、在Darwin层建立Notification监听的方法</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;在锁屏和解锁的时候，iOS系统会发送通知，经过搜索，得知大概有下面3种通知：<br><br>(1)、com.apple.iokit.hid.displayStatus<br><br>锁屏后通知会发出消息，在屏幕变亮后，没有滑动解锁，系统也会发出该通知。<br><br>(2)、com.apple.springboard.lockstate<br><br>在系统锁屏和滑动解锁后，会发出该通知<br><br>(3)、com.apple.springboard.lockcomplete<br>锁屏后，发出该通知。这个通知总会在(2)通知后发出。<br></p>
+<p>判断屏幕是否有锁的方法<br><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">CFNotificationCenterAddObserver</span>(<span class="built_in">CFNotificationCenterGetDarwinNotifyCenter</span>(), <span class="literal">NULL</span>, displayStatusChanged, <span class="built_in">CFSTR</span>(<span class="string">"com.apple.iokit.hid.displayStatus"</span>), <span class="literal">NULL</span>, <span class="built_in">CFNotificationSuspensionBehaviorDeliverImmediately</span>);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> displayStatusChanged(<span class="built_in">CFNotificationCenterRef</span> center, <span class="keyword">void</span> *observer, <span class="built_in">CFStringRef</span> name, <span class="keyword">const</span> <span class="keyword">void</span> *object, <span class="built_in">CFDictionaryRef</span> userInfo) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"event received!"</span>);</span><br><span class="line">    uint64_t state;</span><br><span class="line">    <span class="keyword">int</span> token;</span><br><span class="line">    notify_register_check(<span class="string">"com.apple.iokit.hid.displayStatus"</span>, &amp;token);</span><br><span class="line">    notify_get_state(token, &amp;state);</span><br><span class="line">    notify_cancel(token);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3、宏定义">3、宏定义</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#define nil __DARWIN_NULL</span></span><br></pre></td></tr></table></figure>
+<p>nil用于表示空的实例对象<br></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#define Nil __DARWIN_NULL</span></span><br></pre></td></tr></table></figure>
+<p>Nil用于表示空类对象</p>
+
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2014/11/20/2014-11-20-zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2014-11-16T15:25:00.000Z"><a href="/2014/11/16/2014-11-16-swiftxue-xi-bi-ji/">2014 Nov 16,Sun, 11:25:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2014/11/16/2014-11-16-swiftxue-xi-bi-ji/">Swift学习笔记</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/Swift/">Swift</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h3 id="一、">一、</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;在Objective-C的<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(updateStatus)   onThread:[<span class="built_in">NSThread</span> mainThread] withObject:<span class="literal">nil</span> waitUntilDone:<span class="literal">NO</span>];</span><br></pre></td></tr></table></figure></p>
+<p>在Swift中是没有performSelector方法的。替代方法有2种</p>
+<h4 id="1、设置Timer定时器">1、设置Timer定时器</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSTimer.scheduledTimerWithTimeInterval(<span class="number">0.1</span>, <span class="string">target:</span> self, <span class="string">selector:</span> Selector(<span class="string">"updateStatus"</span>), <span class="string">userInfo:</span> nil, <span class="string">repeats:</span> <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="2、利用GCD定时器">2、利用GCD定时器</h4><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">dispatch_after</span>(<span class="number">1</span>, <span class="function">dispatch_get_main_queue</span>(), &#123;</span><br><span class="line">    <span class="comment">// your function here</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="二、">二、</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">text<span class="variable">.boundingRectWithSize</span>(<span class="built_in">CGSizeMake</span>(w, <span class="built_in">CGFloat</span><span class="variable">.max</span>), options: <span class="built_in">NSStringDrawingOptions</span><span class="variable">.TruncatesLastVisibleLine</span> | <span class="built_in">NSStringDrawingOptions</span><span class="variable">.UsesLineFragmentOrigin</span> | <span class="built_in">NSStringDrawingOptions</span><span class="variable">.UsesFontLeading</span>, attributes: attribute, context: <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这段正常的代码在iOS8.1、Xcode6.1下会报错。搜了一下发现<a href="http://stackoverflow.com/a/24065414/4049468" target="_blank" rel="external">这个</a>。意思是说当吧target设为OS X 10.10时，就正常。如果设为iOS8 SDK，就会警告异常。NSStringDrawingOptions被Swift作为enum:Int类型，而不是struct:RawOptionSet，这是Apple的bug。PS:我第一次向Apple报告iOS SDK的bug。<br><br>&nbsp;&nbsp;&nbsp;&nbsp;同时，<a href="http://stackoverflow.com/a/25029448/4049468" target="_blank" rel="external">这里</a>给出了一个解决方法。就是在Objective-C中写好多个option的连接方法，然后在Swift中调用该方法。<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">NSStringDrawingOptions</span>)combine:(<span class="built_in">NSStringDrawingOptions</span>)option1 with:(<span class="built_in">NSStringDrawingOptions</span>)option2</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> option1 | option2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let boundingRect = <span class="string">"string"</span>.boundingRectWithSize(size, <span class="string">options:</span> StringDrawingOptions.combine(.UsesLineFragmentOrigin, <span class="string">with:</span> .UsesFontLeading), <span class="string">attributes:</span>nil, <span class="string">context:</span>nil)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2014/11/16/2014-11-16-swiftxue-xi-bi-ji/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2014-11-16T15:06:00.000Z"><a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/">2014 Nov 16,Sun, 11:06:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/">UIView中自定义透明矩形的实现</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;在项目中遇到一个需求：做一个二维码扫描的界面。要求是背景黑色透明度80%，中间有个白色透明框<br>
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2014-07-20T10:08:00.000Z"><a href="/2014/07/20/2014-07-20-swift-notes/">2014 Jul 20,Sun, 6:08:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2014/07/20/2014-07-20-swift-notes/">记录碰到的几个问题</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h4 id="1、在ASIFormDataRequest的方法中，使用block的一个问题">1、在ASIFormDataRequest的方法中，使用block的一个问题</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">       __<span class="keyword">weak</span> ASIFormDataRequest  *request = [ASIFormDataRequest requestWithURL:url];</span><br><span class="line">   	[request setCompletionBlock:^&#123;</span><br><span class="line">      [request xxMethod];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<!--阅读更多-->
+<p>这段代码，在debug scheme下可以正常运行，但是在发布时的release scheme下有bug。因为编译器优化时___weak指针会被置为nil，会被释放所以，下面的代码就无法执行。同理，___unsafe_unretain变量也会存在同样的问题。解决方法是：强制持有指针<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">    ASIFormDataRequest  *request = [ASIFormDataRequest requestWithURL:url];</span><br><span class="line">    __<span class="keyword">weak</span> ASIFormDataRequest *weakRequest = request;</span><br><span class="line">    __<span class="keyword">weak</span> <span class="keyword">typeof</span>(<span class="keyword">self</span>) weakSelf = <span class="keyword">self</span>;</span><br><span class="line">    [request setCompletionBlock:^&#123;</span><br><span class="line">    [weakRequest xxMethod];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="参考资料">参考资料</h4><p><a href="http://stackoverflow.com/questions/7205128/fix-warning-capturing-an-object-strongly-in-this-block-is-likely-to-lead-to-a/" target="_blank" rel="external">http://stackoverflow.com/questions/7205128/fix-warning-capturing-an-object-strongly-in-this-block-is-likely-to-lead-to-a/</a></p>
+<h4 id="2、一些技巧">2、一些技巧</h4><h5 id="(1)、如何删掉所有的subView">(1)、如何删掉所有的subView</h5><p>  常见的方法就是遍历view的subviews，然后逐个移除。这里介绍两个简单的方法：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[some<span class="built_in">NSView</span> setSubviews:[<span class="built_in">NSArray</span> array]]</span><br></pre></td></tr></table></figure></p>
+<p>和<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[some<span class="built_in">UIView</span> subviews] makeObjectsPerformSelector:<span class="keyword">@selector</span>(removeFromSuperview)]</span><br></pre></td></tr></table></figure></p>
+<h5 id="(2)、强制去除Xcode的编译警告">(2)、强制去除Xcode的编译警告</h5><p>有时候，Xcode会提示一些代码编写存在的warnings，以让开发者能修改完善。但有时候，提示的warnings是正确的，不需要修改。怎么才能去除Xcode的警告呢？<br><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">\<span class="preprocessor">#define SuppressPerformSelectorLeakWarning(Stuff) </span></span><br><span class="line"><span class="keyword">do</span> &#123; \</span><br><span class="line">_Pragma(<span class="string">"clang diagnostic push"</span>) \</span><br><span class="line">_Pragma(<span class="string">"clang diagnostic ignored \"-Warc-performSelector-leaks\""</span>)</span><br><span class="line">Stuff; \</span><br><span class="line">_Pragma(<span class="string">"clang diagnostic pop"</span>) \</span><br><span class="line">&#125; <span class="keyword">while</span> (<span class="number">0</span>)</span><br></pre></td></tr></table></figure></p>
+<p>_Pargma的处理方式是把字符串常量的内容（在删除两边的双引号，并把字符串常量内部的\”替换为”，把\\替换为\之后）看成是#pragma指令中出现的预处理器标记。 这段代码的基本流程:</p>
+<pre><code><span class="bullet">1. </span>push 当前警告入栈
+
+<span class="bullet">2. </span>忽略我们要消除的警告
+
+<span class="bullet">3. </span>执行会产生警告的代码
+
+<span class="bullet">4. </span>pop 警告出栈——恢复之前的状态
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2014/07/20/2014-07-20-swift-notes/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+      <time datetime="2014-07-20T10:08:00.000Z"><a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/">2014 Jul 20,Sun, 6:08:00 pm</a></time>
+
+  
+    <h1 class="title"><a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/">记录碰到的几个问题</a></h1>
+  
+
+
+  
+  <div class="categories">
+  	<i class="fa fa-folder-open"></i>
+    <a href="/categories/iOS/">iOS</a>
+  </div>
+
+
+<div class="clear"></div>
+      
+    </header>
+    <div class="entry">
+      
+        <h4 id="1、在ASIFormDataRequest的方法中，使用block的一个问题">1、在ASIFormDataRequest的方法中，使用block的一个问题</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">       __<span class="keyword">weak</span> ASIFormDataRequest  *request = [ASIFormDataRequest requestWithURL:url];</span><br><span class="line">   	[request setCompletionBlock:^&#123;</span><br><span class="line">      [request xxMethod];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        <div class="alignleft">
+            <a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/#more" class="more-link"><i class="fa fa-chevron-right"></i>Read More</a>
+        </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+
+<nav id="pagination">
+  
+  
+    <a href="/page/2/" class="alignright next">下一頁<i class="fa fa-long-arrow-right"></i></a>
+  
+  <div class="clearfix"></div>
+</nav>
+
+<script src="/js/jquery.anystretch.min.js" type="text/javascript"></script>
+<script src="/js/cover.js" type="text/javascript"></script>
+
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div>
+  
+  &copy; 2015 王传煦
+  
+</div>
+Powered by <a href="http://zespia.tw/hexo/" title="Hexo" target="_blank" rel="external">Hexo</a> and <a href="http://pages.github.com/" title="GitHub Pages" target="_blank" rel="external">GitHub Pages</a>
+
+<div class="clearfix"></div></footer>
+  
+<script src="/js/jquery.imagesloaded.min.js" type="text/javascript"></script>
+<script src="/js/gallery.js" type="text/javascript"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js" type="text/javascript"></script>
+
+
+
+
+    <script type="text/javascript">
+        (function(){
+
+            $(window).scroll(function(){
+
+                var scrollTop = $(window).scrollTop();
+                if ( scrollTop >200 ){
+                    $("#main-nav").removeClass('normal_mode').addClass('top_mode');
+                } else{
+                    $("#main-nav").removeClass('top_mode').addClass('normal_mode');
+                }
+
+            });
+
+        })();
+    </script>
+
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox({
+      'titlePosition': 'inside'
+    });
+  })(jQuery);
+  </script>
+
+
+
+
+<script type="text/javascript">
+  
+  $(function(){
+
+    $('.title').hover(
+      function() {      
+        $(this).stop().animate(
+          {'marginLeft': '10px'}, 200
+        );   
+      }, 
+      function() {       
+        $(this).stop().animate({'marginLeft': '0px'}, 200);      
+      
+    });   
+
+  });
+
+</script>
+
+
+</body>
+</html>
