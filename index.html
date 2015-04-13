@@ -16,17 +16,13 @@
     <meta property="og:image" content="undefined"/>
   
 
-  <link href="/favicon.ico" rel="icon">
+  <link href="/favicon.png" rel="icon">
   <link rel="alternate" href="/atom.xml" title="iOS技术博客" type="application/atom+xml">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" type="text/css">
-<link rel="stylesheet" href="/css/style.css" type="text/css">
-  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
   
 <script type="text/javascript">
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-368771XX-X']);
+  _gaq.push(['_setAccount', 'UA-5353535-6']);
   _gaq.push(['_trackPageview']);
 
   (function() {
@@ -38,82 +34,36 @@
 
 </head>
 
+
 <body>
-  <header id="header" class='normal_mode'>
-    <nav id="main-nav">
-  <ul class='container'>
-    
-      <li><a href="/">主页</a></li>
-    
-      <li><a href="/archives">文章</a></li>
-    
-  </ul>
-  <div class="clearfix"></div>
-</nav>
-  </header>
-  <div id="content" class="container">
-    <div id="cover">
-	<div id="profile" alt="">
-		<a href="/">
-			<div class="logo">
-				<img src="/logo.png" alt="Profile Picture">
-			</div>
-			<div id="title">iOS技术博客</div>
-		</a>
-
-		
-		 <ul class="my-socials">
-  
-  <li>
-  	<a href="https://github.com/bbconan" class="github" target="_blank">
-  		<i class="fa fa-github"></i>
-  	</a>
-  </li>
-  
-  <li>
-  	<a href="http://weibo.com/1729937805" class="weibo" target="_blank">
-  		<i class="fa fa-weibo"></i>
-  	</a>
-  </li>
-  
- 
-</ul>
-	</div>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">iOS技术博客</a></h1>
+  <h2 id="header-h2"></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">首页</a></li>
+      
+      <li><a href="/archives">文章归档</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
 </div>
-
-
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2015-03-30T13:41:00.000Z"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/">2015 Mar 30,Mon, 9:41:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/">Effective Objective-C 2.0 笔记5</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2015-03-30T13:41:00.000Z">2015-03-30</time>
       
     </header>
     <div class="entry">
@@ -126,16 +76,9 @@
 
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -143,37 +86,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2015-03-30T13:19:00.000Z"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-4/">2015 Mar 30,Mon, 9:19:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-4/">Effective Objective-C 2.0 笔记4</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2015-03-30T13:19:00.000Z">2015-03-30</time>
       
     </header>
     <div class="entry">
@@ -181,16 +102,9 @@
         <h1 id="四、协议和类别">四、协议和类别</h1><h2 id="①、delegate要用weak修饰，因为可以避免互相引用。">①、delegate要用weak修饰，因为可以避免互相引用。</h2><h2 id="②、利用category可以使继承关系变为可控制的段。">②、利用category可以使继承关系变为可控制的段。</h2><h2 id="③、扩展里可以添加私有方法、私有属性。">③、扩展里可以添加私有方法、私有属性。</h2><h2 id="④、在扩展里添加类的实例变量。">④、在扩展里添加类的实例变量。</h2><h2 id="⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。">⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。</h2><h2 id="⑥、NSDictionary中键值key是copy的，而值value是retain的。">⑥、NSDictionary中键值key是copy的，而值value是retain的。</h2>
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-4/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -198,37 +112,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2015-03-21T05:43:00.000Z"><a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/">2015 Mar 21,Sat, 1:43:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/">Effective Objective-C 2.0 笔记3</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2015-03-21T05:43:00.000Z">2015-03-21</time>
       
     </header>
     <div class="entry">
@@ -241,16 +133,9 @@
 <h2 id="⑦、NSCopying协议中的复制都是浅复制。">⑦、NSCopying协议中的复制都是浅复制。</h2>
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2015/03/21/2015-03-21-effective-objective-c-3-dot-0-bi-ji-4/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -258,37 +143,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2015-03-14T06:48:00.000Z"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">2015 Mar 14,Sat, 2:48:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">Effective Objective-C 2.0 读书笔记2</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2015-03-14T06:48:00.000Z">2015-03-14</time>
       
     </header>
     <div class="entry">
@@ -298,16 +161,9 @@
 <h4 id="(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。">(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。</h4>
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -315,37 +171,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2015-03-05T14:47:00.000Z"><a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/">2015 Mar 5,Thu, 10:47:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/">Effective Objective-C 2.0 读书笔记1</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2015-03-05T14:47:00.000Z">2015-03-05</time>
       
     </header>
     <div class="entry">
@@ -357,16 +191,9 @@
 
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -374,37 +201,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2014-11-20T13:15:00.000Z"><a href="/2014/11/20/2014-11-20-zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/">2014 Nov 20,Thu, 9:15:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2014/11/20/2014-11-20-zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/">最近积累的几个Objective-C知识点</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2014-11-20T13:15:00.000Z">2014-11-20</time>
       
     </header>
     <div class="entry">
@@ -424,16 +229,9 @@
 
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2014/11/20/2014-11-20-zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -441,37 +239,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2014-11-16T15:25:00.000Z"><a href="/2014/11/16/2014-11-16-swiftxue-xi-bi-ji/">2014 Nov 16,Sun, 11:25:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2014/11/16/2014-11-16-swiftxue-xi-bi-ji/">Swift学习笔记</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/Swift/">Swift</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2014-11-16T15:25:00.000Z">2014-11-16</time>
       
     </header>
     <div class="entry">
@@ -486,16 +262,9 @@
 
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2014/11/16/2014-11-16-swiftxue-xi-bi-ji/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -503,37 +272,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2014-11-16T15:06:00.000Z"><a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/">2014 Nov 16,Sun, 11:06:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/">UIView中自定义透明矩形的实现</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2014-11-16T15:06:00.000Z">2014-11-16</time>
       
     </header>
     <div class="entry">
@@ -541,16 +288,16 @@
         <p>&nbsp;&nbsp;&nbsp;&nbsp;在项目中遇到一个需求：做一个二维码扫描的界面。要求是背景黑色透明度80%，中间有个白色透明框<br>
       
     </div>
-    <footer>
+    
       
+      <footer>
         <div class="alignleft">
-            <a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
+          <a href="/2014/11/16/2014-11-16-uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/#more" class="more-link">阅读全文 &gt;</a>
         </div>
-        
-        
+        <div class="clearfix"></div>
+      </footer>
       
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -558,37 +305,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2014-07-20T10:08:00.000Z"><a href="/2014/07/20/2014-07-20-swift-notes/">2014 Jul 20,Sun, 6:08:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2014/07/20/2014-07-20-swift-notes/">记录碰到的几个问题</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2014-07-20T10:08:00.000Z">2014-07-20</time>
       
     </header>
     <div class="entry">
@@ -611,16 +336,9 @@
 </code></pre>
       
     </div>
-    <footer>
+    
       
-        <div class="alignleft">
-            <a href="/2014/07/20/2014-07-20-swift-notes/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
-        </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -628,37 +346,15 @@
 
 
   <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
   <div class="post-content">
     <header>
       
-      <time datetime="2014-07-20T10:08:00.000Z"><a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/">2014 Jul 20,Sun, 6:08:00 pm</a></time>
-
   
     <h1 class="title"><a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/">记录碰到的几个问题</a></h1>
   
 
-
-  
-  <div class="categories">
-  	<i class="fa fa-folder-open"></i>
-    <a href="/categories/iOS/">iOS</a>
-  </div>
-
-
-<div class="clear"></div>
+      
+      <time datetime="2014-07-20T10:08:00.000Z">2014-07-20</time>
       
     </header>
     <div class="entry">
@@ -666,16 +362,16 @@
         <h4 id="1、在ASIFormDataRequest的方法中，使用block的一个问题">1、在ASIFormDataRequest的方法中，使用block的一个问题</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">       __<span class="keyword">weak</span> ASIFormDataRequest  *request = [ASIFormDataRequest requestWithURL:url];</span><br><span class="line">   	[request setCompletionBlock:^&#123;</span><br><span class="line">      [request xxMethod];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
-    <footer>
+    
       
+      <footer>
         <div class="alignleft">
-            <a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/#more" class="more-link"><i class="fa fa-chevron-right"></i>阅读更多</a>
+          <a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/#more" class="more-link">阅读全文 &gt;</a>
         </div>
-        
-        
+        <div class="clearfix"></div>
+      </footer>
       
-      <div class="clearfix"></div>
-    </footer>
+    
   </div>
 </article>
 
@@ -683,86 +379,44 @@
 
 
 
-<nav id="pagination">
-  
-  
-    <a href="/page/2/" class="alignright next">下一頁<i class="fa fa-long-arrow-right"></i></a>
-  
-  <div class="clearfix"></div>
-</nav>
-
-<script src="/js/jquery.anystretch.min.js" type="text/javascript"></script>
-<script src="/js/cover.js" type="text/javascript"></script>
-
+<div class="pagination">
+  <table width='100%'>
+    <tbody>
+    <tr>
+      <td width='120' align='left'>
+        
+      </td>
+      <td width='auto' align='center'>
+          <a href="/archives/">文章归档</a>
+      </td>
+      <td width='120' align='right'>
+        
+        <div class="alignright">
+          <a href="/page/2/" class="alignright next">下一页 ›</a>
+        </div>
+        
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div></div></div>
     <div class="clearfix"></div>
   </div>
-  <footer id="footer" class="inner"><div>
+  <footer id="footer"><div class="inner"><div class="alignleft">
+  <p>
   
-  &copy; 2015 王传煦
+    &copy; 2015 王传煦
   
+  </p>
+  <p>
+    Theme By <a href="http://googleyixia.com" >Byron</a> based on <a href="https://github.com/willerce/hexo-theme-noderce" >Noderce</a>
+  </p>
+
 </div>
-Powered by <a href="http://zespia.tw/hexo/" title="Hexo" target="_blank" rel="external">Hexo</a> and <a href="http://pages.github.com/" title="GitHub Pages" target="_blank" rel="external">GitHub Pages</a>
-
-<div class="clearfix"></div></footer>
-  
-<script src="/js/jquery.imagesloaded.min.js" type="text/javascript"></script>
-<script src="/js/gallery.js" type="text/javascript"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js" type="text/javascript"></script>
-
-
-
-
-    <script type="text/javascript">
-        (function(){
-
-            $(window).scroll(function(){
-
-                var scrollTop = $(window).scrollTop();
-                if ( scrollTop >200 ){
-                    $("#main-nav").removeClass('normal_mode').addClass('top_mode');
-                } else{
-                    $("#main-nav").removeClass('top_mode').addClass('normal_mode');
-                }
-
-            });
-
-        })();
-    </script>
-
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+<div class="clearfix"></div></div></footer>
   <script type="text/javascript">
-  (function($){
-    $('.fancybox').fancybox({
-      'titlePosition': 'inside'
-    });
-  })(jQuery);
-  </script>
-
-
-
-
-<script type="text/javascript">
-  
-  $(function(){
-
-    $('.title').hover(
-      function() {      
-        $(this).stop().animate(
-          {'marginLeft': '10px'}, 200
-        );   
-      }, 
-      function() {       
-        $(this).stop().animate({'marginLeft': '0px'}, 200);      
-      
-    });   
-
-  });
 
 </script>
-
 
 </body>
 </html>
