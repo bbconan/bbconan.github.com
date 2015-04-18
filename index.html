@@ -59,6 +59,34 @@
     <header>
       
   
+    <h1 class="title"><a href="/2015/04/18/Effective-Objective-C-2-0-笔记6/">Effective Objective-C 2.0 笔记6</a></h1>
+  
+
+      
+      <time datetime="2015-04-18T10:12:19.000Z">2015-04-18</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h1 id="六、Blocks和GCD">六、Blocks和GCD</h1><h2 id="①、block是在用栈上的内存来定义的。意思是只有在它的定义的作用域内，block才是有效的。">①、block是在用栈上的内存来定义的。意思是只有在它的定义的作用域内，block才是有效的。<br></h2><p>例如，下面的代码就是错误的：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span>(^block)();</span><br><span class="line"><span class="keyword">if</span>(<span class="comment">/*some condition*/</span>) &#123;</span><br><span class="line">  block = ^&#123;</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"Block A"</span>);</span><br><span class="line">	&#125;;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  block = ^&#123;</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"Block B"</span>);</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line">block();</span><br></pre></td></tr></table></figure></p>
+<p>两个block在if-else域内都是用栈内存定义的。当对每个block进行申请内存操作，就会重写覆盖在作用域结尾处申请的内存。所以，只有在每个if-else模块内，block才能确保是正确的。这个代码可以编译成功，但是在运行时，可能会出现错误。因为无法确定执行的是哪个block。<br>为了解决这个问题，可以向block发送copy消息，block就会从栈(stack)复制到堆(heap)上。此时，block就可以在它定义的作用域外面使用。block也会变成为一个引用计数的对象。所以上面的代码例子，修改一下，就变为正确了。<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span>(^block)();</span><br><span class="line"><span class="keyword">if</span>(<span class="comment">/*some condition*/</span>) &#123;</span><br><span class="line">  block = [^&#123;</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"Block A"</span>);</span><br><span class="line">	&#125; <span class="keyword">copy</span>];</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  block = [^&#123;</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"Block B"</span>);</span><br><span class="line">	&#125; <span class="keyword">copy</span>];</span><br><span class="line">&#125;</span><br><span class="line">block();</span><br></pre></td></tr></table></figure></p>
+<h2 id="②、performSelector家族的方法有潜在的内存管理方面的危险。因为无法确定什么方法被执行，ARC编译器就无法插入正确的内存管理方法。另外，在返回类型和可传递的参数个数方面，也是个限制。">②、performSelector家族的方法有潜在的内存管理方面的危险。因为无法确定什么方法被执行，ARC编译器就无法插入正确的内存管理方法。另外，在返回类型和可传递的参数个数方面，也是个限制。</h2>
+      
+    </div>
+    
+      
+    
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  <div class="post-content">
+    <header>
+      
+  
     <h1 class="title"><a href="/2015/03/30/2015-03-30-effective-objective-c-2-dot-0-bi-ji-5/">Effective Objective-C 2.0 笔记5</a></h1>
   
 
@@ -147,7 +175,7 @@
     <header>
       
   
-    <h1 class="title"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">Effective Objective-C 2.0 读书笔记2</a></h1>
+    <h1 class="title"><a href="/2015/03/14/2015-03-14-effective-objective-c-2-dot-0-du-shu-bi-ji-2/">Effective Objective-C 2.0 笔记2</a></h1>
   
 
       
@@ -175,7 +203,7 @@
     <header>
       
   
-    <h1 class="title"><a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/">Effective Objective-C 2.0 读书笔记1</a></h1>
+    <h1 class="title"><a href="/2015/03/05/2015-03-05-effective-objective-c-2-dot-0-du-shu-bi-ji-1/">Effective Objective-C 2.0 笔记1</a></h1>
   
 
       
@@ -345,39 +373,6 @@
 
 
 
-  <article class="post">
-  <div class="post-content">
-    <header>
-      
-  
-    <h1 class="title"><a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/">记录碰到的几个问题</a></h1>
-  
-
-      
-      <time datetime="2014-07-20T10:08:00.000Z">2014-07-20</time>
-      
-    </header>
-    <div class="entry">
-      
-        <h4 id="1、在ASIFormDataRequest的方法中，使用block的一个问题">1、在ASIFormDataRequest的方法中，使用block的一个问题</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">       __<span class="keyword">weak</span> ASIFormDataRequest  *request = [ASIFormDataRequest requestWithURL:url];</span><br><span class="line">   	[request setCompletionBlock:^&#123;</span><br><span class="line">      [request xxMethod];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-      
-      <footer>
-        <div class="alignleft">
-          <a href="/2014/07/20/2014-07-20-ji-lu-yi-xie-wen-ti/#more" class="more-link">阅读全文 &gt;</a>
-        </div>
-        <div class="clearfix"></div>
-      </footer>
-      
-    
-  </div>
-</article>
-
-
-
-
 
 <div class="pagination">
   <table width='100%'>
@@ -392,7 +387,7 @@
       <td width='120' align='right'>
         
         <div class="alignright">
-          <a href="/page/2/" class="alignright next">下一页 ›</a>
+          <a href="/page/2/" class="alignright next">Next ›</a>
         </div>
         
       </td>
