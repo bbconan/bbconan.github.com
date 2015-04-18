@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   
-  <title>iOS技术博客 › IOS获得广播地址</title>
+  <title>iOS技术博客 › iOS获得广播地址</title>
   <meta name="author" content="王传煦">
   
-  <meta name="description" content="最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：
+  <meta name="description" content="最近开发过程中，遇到需要获得iOS系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：
 1、123456789101112131415161718192021222324252627282930#include &amp;lt;sys/types.h&amp;gt;#include &amp;lt;sy">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="IOS获得广播地址"/>
+  <meta property="og:title" content="iOS获得广播地址"/>
   <meta property="og:site_name" content="iOS技术博客"/>
 
   
@@ -61,7 +61,7 @@
     <header>
       
   
-    <h1 class="title">IOS获得广播地址</h1>
+    <h1 class="title">iOS获得广播地址</h1>
   
 
       
@@ -70,7 +70,7 @@
     </header>
     <div class="entry">
       
-        <p>最近开发过程中，遇到需要获得ios系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：</p>
+        <p>最近开发过程中，遇到需要获得iOS系统广播地址的问题，经过一番google，获得一个很好的解决方法，如下：</p>
 <h4 id="1、">1、</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#include <span class="title">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#include <span class="title">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#include <span class="title">&lt;ifaddrs.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#include <span class="title">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line">- (<span class="built_in">NSString</span> *)getBroadcastAddress</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSString</span> *broadCastAddress = <span class="string">@""</span>;</span><br><span class="line">    <span class="keyword">struct</span> ifaddrs *interfaces = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">struct</span> ifaddrs *temp_addr = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> success = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// retrieve the current interfaces - returns 0 on success</span></span><br><span class="line">    success = getifaddrs(&amp;interfaces);</span><br><span class="line">     <span class="keyword">if</span> (success == <span class="number">0</span>) &#123;</span><br><span class="line">        temp_addr = interfaces;</span><br><span class="line">      <span class="keyword">while</span>(temp_addr != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// check if interface is en0 which is the wifi connection on the iPhone</span></span><br><span class="line">            <span class="keyword">if</span>(temp_addr-&gt;ifa_addr-&gt;sa_family == AF_INET)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span>([[<span class="built_in">NSString</span> stringWithUTF8String:temp_addr-&gt;ifa_name]                isEqualToString:<span class="string">@"en0"</span>])</span><br><span class="line">                &#123;</span><br><span class="line">                    broadCastAddress = [<span class="built_in">NSString</span> stringWithUTF8String:inet_ntoa(((<span class="keyword">struct</span> sockaddr_in *)temp_addr-&gt;ifa_dstaddr)-&gt;sin_addr)];</span><br><span class="line">      &#125;</span><br><span class="line">     &#125;</span><br><span class="line">       temp_addr = temp_addr-&gt;ifa_next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">      freeifaddrs(interfaces);</span><br><span class="line">      <span class="keyword">return</span> broadCastAddress;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h4 id="2、">2、</h4><p>需要在xcode该工程里配置<br><img src="/images/broadcastaddr_setting.jpeg"><br>加入CFNetwork.framework、SystemConfiguration.framework</p>
 
@@ -80,12 +80,12 @@
     <footer>
       <div class="alignleft">
       
+      
   
-  <div class="categories">
-    <a href="/categories/iOS/">iOS</a>
+  <div class="tags">
+    <a href="/tags/iOS/">iOS</a>
   </div>
 
-      
       </div>
       <div class="clearfix"></div>
     </footer>
