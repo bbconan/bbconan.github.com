@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS技术博客 › iOS Core Animation:Advanced Techniques 笔记</title>
+  <meta name="author" content="王传煦">
+  
+  <meta name="description" content="1、每个UIView都有一个CALayer类型的属性layer2、iOS有2种平行体系UIView和CALayer的原因是：区分开责任，同事避免重复的代码。例如iOS和Mac OS X3、在UIView中没有暴露出CALayer的功能有：①、阴影、圆角、有颜色的边框。②、3D旋转和位置变换③、非矩形">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="iOS Core Animation:Advanced Techniques 笔记"/>
+  <meta property="og:site_name" content="iOS技术博客"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="iOS技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-5353535-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">iOS技术博客</a></h1>
+  <h2 id="header-h2"></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">首页</a></li>
+      
+      <li><a href="/archives">文章归档</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">iOS Core Animation:Advanced Techniques 笔记</h1>
+  
+
+      
+      <time datetime="2015-05-19T14:57:18.000Z">2015-05-19</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h4 id="1、每个UIView都有一个CALayer类型的属性layer">1、每个UIView都有一个CALayer类型的属性layer</h4><h4 id="2、iOS有2种平行体系UIView和CALayer的原因是：区分开责任，同事避免重复的代码。例如iOS和Mac_OS_X">2、iOS有2种平行体系UIView和CALayer的原因是：区分开责任，同事避免重复的代码。例如iOS和Mac OS X</h4><h4 id="3、在UIView中没有暴露出CALayer的功能有：">3、在UIView中没有暴露出CALayer的功能有：</h4><h5 id="①、阴影、圆角、有颜色的边框。">①、阴影、圆角、有颜色的边框。</h5><h5 id="②、3D旋转和位置变换">②、3D旋转和位置变换</h5><h5 id="③、非矩形边框">③、非矩形边框</h5><h5 id="④、内容蒙板">④、内容蒙板</h5><h5 id="⑤、多步骤、非线性的动画">⑤、多步骤、非线性的动画</h5><h4 id="4、对应UIView中的contentMode，CALayer中的是contentsGravity。">4、对应UIView中的contentMode，CALayer中的是contentsGravity。</h4><h4 id="5、如果不需要后备图片，就不需要浪费内存和cpu时间去生成它。所以苹果建议如果不打算做任何普通的绘制，就不要在类中留下空的drawRect方法。">5、如果不需要后备图片，就不需要浪费内存和cpu时间去生成它。所以苹果建议如果不打算做任何普通的绘制，就不要在类中留下空的drawRect方法。</h4><h4 id="6、CALayer没有响应链的概念，所以它不能用来处理触摸事件、手势事件。但是，它有2个方法来帮助实现触摸事件，分别是containsPoint：和hitTest">6、CALayer没有响应链的概念，所以它不能用来处理触摸事件、手势事件。但是，它有2个方法来帮助实现触摸事件，分别是containsPoint：和hitTest <br></h4><p>当调用hitTest方法时，测试的顺序是严格按照layer树中layer的顺序。zPosition属性可以用来影响layer层在屏幕上的显示顺序，但不会影响触摸事件的处理顺序。</p>
+<h4 id="7、当属性在动画block外面变更的时候，UIView通过对属性行为返回nil禁用隐式动画。">7、当属性在动画block外面变更的时候，UIView通过对属性行为返回nil禁用隐式动画。</h4><p>UIView关联图层禁用了隐式动画。唯一在这个图层进行动画的方法是运用UIView动画方法（而不是依赖CATransaction），继承UIView，覆盖-actionForLayer:-forKey:方法，或者创建一个显式动画。<br><br>对于单独图层，可以通过实现-actionForLayer:-forKey:图层代理方法，或者提供一个actions词典。</p>
+
+      
+    </div>
+    
+    <footer>
+      <div class="alignleft">
+      
+      
+  
+  <div class="tags">
+    <a href="/tags/iOS/">iOS</a>
+  </div>
+
+      </div>
+      <div class="clearfix"></div>
+    </footer>
+    
+  </div>
+</article>
+
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+  <div id="disqus_thread">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1825414"></script>
+    <!-- UY END -->
+  </div>
+</section>
+
+
+</div></div>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer"><div class="inner"><div class="alignleft">
+  <p>
+  
+    &copy; 2015 王传煦
+  
+  </p>
+  <p>
+    Theme By <a href="http://googleyixia.com" >Byron</a> based on <a href="https://github.com/willerce/hexo-theme-noderce" >Noderce</a>
+  </p>
+
+</div>
+<div class="clearfix"></div></div></footer>
+  <script type="text/javascript">
+
+</script>
+
+</body>
+</html>
