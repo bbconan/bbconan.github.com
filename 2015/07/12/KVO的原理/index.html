@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS技术博客 › KVO的原理</title>
+  <meta name="author" content="王传煦">
+  
+  <meta name="description" content="翻译自Mike Ash大神的blog：How Key-Value Oberserving WorksKVO是什么？尽管大多数读者可能已经知道KVO，但是这里做一个快速总结：KVO是构成Cocoa Bindings基础的技术；当对象的属性变化时，它可以通知对象。一个对象观察另一个对象的key。当被观察的对象改变那个key的值时，观察者就会得到通知。非常简单，对不对？微妙所在是通常情况下，KVO不需要在被观察者的类中添加代码。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="KVO的原理"/>
+  <meta property="og:site_name" content="iOS技术博客"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="iOS技术博客" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-5353535-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header"><div class="meta inner">
+  <h1><a href="/">iOS技术博客</a></h1>
+  <h2 id="header-h2"></h2>
+  <nav id="main-nav">
+    <ul>
+      
+      <li><a href="/">首页</a></li>
+      
+      <li><a href="/archives">文章归档</a></li>
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+</div>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="post-content">
+    <header>
+      
+  
+    <h1 class="title">KVO的原理</h1>
+  
+
+      
+      <time datetime="2015-07-12T05:50:18.000Z">2015-07-12</time>
+      
+    </header>
+    <div class="entry">
+      
+        <h2 id="翻译自Mike_Ash大神的blog：How_Key-Value_Oberserving_Works">翻译自Mike Ash大神的blog：<a href="https://www.mikeash.com/pyblog/friday-qa-2009-01-23.html" target="_blank" rel="external">How Key-Value Oberserving Works</a></h2><h3 id="KVO是什么？">KVO是什么？</h3><p>尽管大多数读者可能已经知道KVO，但是这里做一个快速总结：KVO是构成Cocoa Bindings基础的技术；当对象的属性变化时，它可以通知对象。<br>一个对象观察另一个对象的key。当被观察的对象改变那个key的值时，观察者就会得到通知。非常简单，对不对？微妙所在是通常情况下，KVO不需要在被观察者的类中添加代码。<a id="more"></a></p>
+<h3 id="概况">概况</h3><p>既然不需要在被观察者的类中添加代码，那KVO是怎样工作的呢？这就是Objective-C Runtime的威力所在。当你第一次观察一个特定类的对象时，KVO会在运行时构建一个继承该类的新类。新类中，KVO会重写所有被观察key值的set方法,然后切换对象的isa指针(告诉Objective-C Runtime所指向的内存块实际是什么对象类型的指针)，以致你的对象会神奇地变为新类的实例对象。<br>那些被覆盖重写的set方法就是KVO可以通知观察者的真实原因所在：改变一个key值是需要检查该key的set方法；因为KVO重写了set方法，所以它可以拦截set方法。任何时候，只要set方法被调用，KVO就会向观察者发送通知。(当然，如果你直接对实例变量进行修改，是不会检查set方法。KVO要求兼容的类不能做直接修改，而是在手动通知调用中必须封装实例变量的直接访问(译者注：不能直接访问实例变量，而是要使用self.property访问))。<br>实际上苹果不想这块功能暴露出来，这变得十分微妙。除了setter方法外，动态生成的子类也会重写-class方法以达到欺骗使用者并且返回原始的类。如果你不仔细观察，KVO生成的子类对象就和它们原来未被观察的副本一模一样。</p>
+<h3 id="深挖">深挖</h3><p>说了这么多，让我们看看KVO到底是怎么运作的。我写了一个程序来证明KVO的原理。因为动态KVO子类尝试隐藏自己的存在证据，我主要用Objective-C Runtime方法来获得我们在寻找的信息。<br>代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// gcc -o kvoexplorer -framework Foundation kvoexplorer.m</span></span><br><span class="line"></span><br><span class="line"> <span class="preprocessor">#import <span class="title">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"> <span class="preprocessor">#import <span class="title">&lt;objc/runtime.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"> <span class="class"><span class="keyword">@interface</span> <span class="title">TestClass</span> : <span class="title">NSObject</span></span></span><br><span class="line"> &#123;</span><br><span class="line">     <span class="keyword">int</span> x;</span><br><span class="line">     <span class="keyword">int</span> y;</span><br><span class="line">     <span class="keyword">int</span> z;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">@property</span> <span class="keyword">int</span> x;</span><br><span class="line"> <span class="keyword">@property</span> <span class="keyword">int</span> y;</span><br><span class="line"> <span class="keyword">@property</span> <span class="keyword">int</span> z;</span><br><span class="line"> <span class="keyword">@end</span></span><br><span class="line"> <span class="class"><span class="keyword">@implementation</span> <span class="title">TestClass</span></span></span><br><span class="line"> <span class="keyword">@synthesize</span> x, y, z;</span><br><span class="line"> <span class="keyword">@end</span></span><br><span class="line"> </span><br><span class="line"> <span class="keyword">static</span> <span class="built_in">NSArray</span> *ClassMethodNames(Class c)</span><br><span class="line"> &#123;</span><br><span class="line">     <span class="built_in">NSMutableArray</span> *array = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">     </span><br><span class="line">     <span class="keyword">unsigned</span> <span class="keyword">int</span> methodCount = <span class="number">0</span>;</span><br><span class="line">     Method *methodList = class_copyMethodList(c, &amp;methodCount);</span><br><span class="line">     <span class="keyword">unsigned</span> <span class="keyword">int</span> i;</span><br><span class="line">     <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; methodCount; i++)</span><br><span class="line">         [array addObject: <span class="built_in">NSStringFromSelector</span>(method_getName(methodList[i]))];</span><br><span class="line">     free(methodList);</span><br><span class="line">     </span><br><span class="line">     <span class="keyword">return</span> array;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">void</span> PrintDescription(<span class="built_in">NSString</span> *name, <span class="keyword">id</span> obj)</span><br><span class="line"> &#123;</span><br><span class="line">     <span class="built_in">NSString</span> *str = [<span class="built_in">NSString</span> stringWithFormat:</span><br><span class="line">         <span class="string">@"%@: %@\n\tNSObject class %s\n\tlibobjc class %s\n\timplements methods &lt;%@&gt;"</span>,</span><br><span class="line">         name,</span><br><span class="line">         obj,</span><br><span class="line">         class_getName([obj class]),</span><br><span class="line">         class_getName(obj-&gt;isa),</span><br><span class="line">         [ClassMethodNames(obj-&gt;isa) componentsJoinedByString:<span class="string">@", "</span>]];</span><br><span class="line">     printf(<span class="string">"%s\n"</span>, [str UTF8String]);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span><br><span class="line"> &#123;</span><br><span class="line">     [<span class="built_in">NSAutoreleasePool</span> new];</span><br><span class="line">     </span><br><span class="line">     TestClass *x = [[TestClass alloc] init];</span><br><span class="line">     TestClass *y = [[TestClass alloc] init];</span><br><span class="line">     TestClass *xy = [[TestClass alloc] init];</span><br><span class="line">     TestClass *control = [[TestClass alloc] init];</span><br><span class="line">     </span><br><span class="line">     [x addObserver:x forKeyPath:<span class="string">@"x"</span> options:<span class="number">0</span> context:<span class="literal">NULL</span>];</span><br><span class="line">     [xy addObserver:xy forKeyPath:<span class="string">@"x"</span> options:<span class="number">0</span> context:<span class="literal">NULL</span>];</span><br><span class="line">     [y addObserver:y forKeyPath:<span class="string">@"y"</span> options:<span class="number">0</span> context:<span class="literal">NULL</span>];</span><br><span class="line">     [xy addObserver:xy forKeyPath:<span class="string">@"y"</span> options:<span class="number">0</span> context:<span class="literal">NULL</span>];</span><br><span class="line">     </span><br><span class="line">     PrintDescription(<span class="string">@"control"</span>, control);</span><br><span class="line">     PrintDescription(<span class="string">@"x"</span>, x);</span><br><span class="line">     PrintDescription(<span class="string">@"y"</span>, y);</span><br><span class="line">     PrintDescription(<span class="string">@"xy"</span>, xy);</span><br><span class="line">     </span><br><span class="line">     printf(<span class="string">"Using NSObject methods, normal setX: is %p, overridden setX: is %p\n"</span>,</span><br><span class="line">           [control methodForSelector:<span class="keyword">@selector</span>(setX:)],</span><br><span class="line">           [x methodForSelector:<span class="keyword">@selector</span>(setX:)]);</span><br><span class="line">     printf(<span class="string">"Using libobjc functions, normal setX: is %p, overridden setX: is %p\n"</span>,</span><br><span class="line">           method_getImplementation(class_getInstanceMethod(object_getClass(control),</span><br><span class="line">                                    <span class="keyword">@selector</span>(setX:))),</span><br><span class="line">           method_getImplementation(class_getInstanceMethod(object_getClass(x),</span><br><span class="line">                                    <span class="keyword">@selector</span>(setX:))));</span><br><span class="line">     </span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>我们从上到下简单的浏览一下。<br></p>
+<p>首先，我们定义一个有3个属性的TestClass类(KVO对没有@property的类也起作用，但这是定义setter和getter最简单的方式)。<br></p>
+<p>其次，我们定义一对功能性函数。<strong>ClassMethodNames</strong>使用Objective-C Runtime函数来遍历一个类，获得类中实现的方法的列表。注意它只获得当前类直接实现的方法，不获得父类中的。<strong>PrintDescription</strong>打印一份传递给它的对象的完整描述, 好像这个对象的类调用<strong>-class</strong>方法一样调用Objective-C Runtime的函数；同时，打印出那个类中实现的方法。</p>
+<p>然后，我们用这些函数进行实验。我们创建了4个以不同方式观察的TestClass实例变量。x实例变量观察x的key值；y同理；xy观察x、y的key值。z不被观察以用来对比。最后的control变量完全不会被观察，充当实验的控制开关。<br></p>
+<p>下一步，我们打印出所有4个对象的完整描述。<br></p>
+<p>接着，我们对重写的setter方法进行深挖。打印出control对象的<strong>-setX:</strong>方法的实际实现部分的地址，同时用一个被观察的对象来做对比。重复2遍，因为调用<strong>-methroForSelector:</strong>不能成功展现出重写的方法。KVO试图隐藏动态子类的同时，甚至利用这个技术隐藏被重写的方法。然而，换成调用Objective-C Runtime函数可以理所当然地获得正确结果。</p>
+<h3 id="运行代码">运行代码</h3><p>我们看一下例子：</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">control</span>: &lt;<span class="attribute">TestClass</span>: <span class="number">0x104b20</span>&gt;</span><br><span class="line">        NSObject <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span></span></span><br><span class="line">        libobjc <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span></span></span><br><span class="line">        implements methods &lt;<span class="attribute">setX</span>:, x, <span class="attribute">setY</span>:, y, <span class="attribute">setZ</span>:, z&gt;</span><br><span class="line">    <span class="attribute">x</span>: &lt;<span class="attribute">TestClass</span>: <span class="number">0x103280</span>&gt;</span><br><span class="line">        NSObject <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span></span></span><br><span class="line">        libobjc <span class="class"><span class="keyword">class</span> <span class="title">NSKVONotifying_TestClass</span></span></span><br><span class="line">        implements methods &lt;<span class="attribute">setY</span>:, <span class="attribute">setX</span>:, <span class="class"><span class="keyword">class</span>, <span class="title">dealloc</span>, <span class="title">_isKVOA</span>&gt;</span></span><br><span class="line">    <span class="attribute">y</span>: &lt;<span class="attribute">TestClass</span>: <span class="number">0x104b00</span>&gt;</span><br><span class="line">        NSObject <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span></span></span><br><span class="line">        libobjc <span class="class"><span class="keyword">class</span> <span class="title">NSKVONotifying_TestClass</span></span></span><br><span class="line">        implements methods &lt;<span class="attribute">setY</span>:, <span class="attribute">setX</span>:, <span class="class"><span class="keyword">class</span>, <span class="title">dealloc</span>, <span class="title">_isKVOA</span>&gt;</span></span><br><span class="line">    <span class="attribute">xy</span>: &lt;<span class="attribute">TestClass</span>: <span class="number">0x104b10</span>&gt;</span><br><span class="line">        NSObject <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span></span></span><br><span class="line">        libobjc <span class="class"><span class="keyword">class</span> <span class="title">NSKVONotifying_TestClass</span></span></span><br><span class="line">        implements methods &lt;<span class="attribute">setY</span>:, <span class="attribute">setX</span>:, <span class="class"><span class="keyword">class</span>, <span class="title">dealloc</span>, <span class="title">_isKVOA</span>&gt;</span></span><br><span class="line">    Using NSObject methods, normal <span class="attribute">setX</span>: <span class="keyword">is</span> <span class="number">0x195e</span>, overridden <span class="attribute">setX</span>: <span class="keyword">is</span> <span class="number">0x195e</span></span><br><span class="line">    Using libobjc functions, normal <span class="attribute">setX</span>: <span class="keyword">is</span> <span class="number">0x195e</span>, overridden <span class="attribute">setX</span>: <span class="keyword">is</span> <span class="number">0x96a1a550</span></span><br></pre></td></tr></table></figure>
+<p>首先，打印得到控制对象。正如预想的一样，它是TestClass类，并且实现了从类的属性合成的6个方法。<br></p>
+<p>然后，打印得到3个被观察的对象。注意，调用<strong><em>-class</em>方法仍然显示TestClass的同时，调用*</strong>object_getClass<em>方法则会展现这个对象的真实面目：<em>*NSKVONotifying_TestClass</em></em>的实例变量。这个类就是动态子类。<br></p>
+<p>请注意它是怎样实现2个被观察的setter方法的。有意思了，因为你会注意到不重写<strong>-setZ:</strong>方法是明智的：尽管它也是一个setter方法，但是没人观察它。假设我们对z增加观察者，那么<strong>NSKVONotifying_TestClass</strong>会马上重写<strong>-setZ:</strong>。但是也要注意到，3个实例变量是同一个类的；意思是尽管其中的2个对象只有一个被观察的属性，但是它们仍然会有对x、y2个属性的重写方法。因为没被观察的属性会牵连到已被观察的属性，所以会有一定性能的牺牲。但是，苹果认为如果一个对象有不同的属性被观察，就要生成大量的动态子类，这样明显是不好的处理方式。我也这样认为。<br></p>
+<p>同时，你也会注意到另外3个方法。试图用来隐藏动态子类的被重写的<strong>-class</strong>方法；用来做清理工作的<strong>-dealloc</strong>方法；神秘的<strong>-_isKVOA</strong>方法，看起来像苹果代码用来判断一个对象是否属于这个动态子类的私有方法。<br></p>
+<p>下一步，我们通过调用<strong>-methodForSelector:</strong>打印出<strong>-setX:</strong>的实现方法，2个方法返回相同的结果。因为动态子类没有对它进行重写覆盖，这也说明<strong>-methodForSelector:</strong>内部调用<strong>-class</strong>方法，所以才会得到和我们预想不同的答案。<br></p>
+<p>当然，我们可以完全绕开，用Objective-C Runtime方法打印出实现方法，这样我们就会看到不同之处。第一个和<strong>-methodForSelector:</strong>一致(当然也应该这样)，第二个则完全不同。<br></p>
+<p>我们在debugger中运行代码，可以确切的知道第二个函数是什么：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(gdb) <span class="built_in">print</span> (IMP)<span class="number">0</span>x96a1a550</span><br><span class="line"><span class="variable">$1</span> = (IMP) <span class="number">0</span>x96a1a550 &lt;_NSSetIntValueAndNotify&gt;</span><br></pre></td></tr></table></figure>
+<p>是某种实现观察者通知的私有函数。在Foundation调用<strong>nm -a</strong>命令，我们可以得到这些私有函数的完整列表：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0013</span>df80 <span class="literal">t</span> __NSSetBoolValueAndNotify</span><br><span class="line"> <span class="number">000</span>a0480 <span class="literal">t</span> __NSSetCharValueAndNotify</span><br><span class="line"> <span class="number">0013e120</span> <span class="literal">t</span> __NSSetDoubleValueAndNotify</span><br><span class="line"> <span class="number">0013e1</span>f0 <span class="literal">t</span> __NSSetFloatValueAndNotify</span><br><span class="line"> <span class="number">000e3550</span> <span class="literal">t</span> __NSSetIntValueAndNotify</span><br><span class="line"> <span class="number">0013e390</span> <span class="literal">t</span> __NSSetLongLongValueAndNotify</span><br><span class="line"> <span class="number">0013e2</span>c0 <span class="literal">t</span> __NSSetLongValueAndNotify</span><br><span class="line"> <span class="number">00089</span>df0 <span class="literal">t</span> __NSSetObjectValueAndNotify</span><br><span class="line"> <span class="number">0013e6</span>f0 <span class="literal">t</span> __NSSetPointValueAndNotify</span><br><span class="line"> <span class="number">0013e7</span>d0 <span class="literal">t</span> __NSSetRangeValueAndNotify</span><br><span class="line"> <span class="number">0013e8</span>b0 <span class="literal">t</span> __NSSetRectValueAndNotify</span><br><span class="line"> <span class="number">0013e550</span> <span class="literal">t</span> __NSSetShortValueAndNotify</span><br><span class="line"> <span class="number">0008</span>ab20 <span class="literal">t</span> __NSSetSizeValueAndNotify</span><br><span class="line"> <span class="number">0013e050</span> <span class="literal">t</span> __NSSetUnsignedCharValueAndNotify</span><br><span class="line"> <span class="number">0009</span>fcd0 <span class="literal">t</span> __NSSetUnsignedIntValueAndNotify</span><br><span class="line"> <span class="number">0013e470</span> <span class="literal">t</span> __NSSetUnsignedLongLongValueAndNotify</span><br><span class="line"> <span class="number">0009</span>fc00 <span class="literal">t</span> __NSSetUnsignedLongValueAndNotify</span><br><span class="line"> <span class="number">0013e620</span> <span class="literal">t</span> __NSSetUnsignedShortValueAndNotify</span><br></pre></td></tr></table></figure>
+<p>在这个列表中，我们可以发现一些有意思的东西。首先，你会注意到苹果为每个想要支持的基本数据类型实现了一个单独函数。所有的Objective-C对象只需要一个(<strong>_NSSetObjectValueAndNotify</strong>)，其他的类型则需要大量的函数。同时，这个集合还是不完整的：缺少<strong>long double</strong>、<strong>_Bool</strong>的函数。没有对泛型支持，例如当你有个<strong>CFTypeRef</strong>属性时就会遇到。然而，却有支持多个通用Cocoa structs的函数，虽然剩下大量的structs不会支持。意思是任何这些类型对象的属性是不能得到自动KVO通知的。<br></p>
+<p>KVO是一个有威力的技术，有时候它显得过于威力了，尤其涉及到自动通知。现在你知道KVO内部是怎样工作的，你可以觉得什么时候使用它、出错时怎样调试它。<br></p>
+<p>如果你打算在自己的应用中使用KVO，可以看一下我的另外一篇文章<a href="https://www.mikeash.com/pyblog/key-value-observing-done-right.html" target="_blank" rel="external">Key-Value Observing Done Right</a></p>
+
+      
+    </div>
+    
+    <footer>
+      <div class="alignleft">
+      
+      
+  
+  <div class="tags">
+    <a href="/tags/iOS/">iOS</a>
+  </div>
+
+      </div>
+      <div class="clearfix"></div>
+    </footer>
+    
+  </div>
+</article>
+
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+  <div id="disqus_thread">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1825414"></script>
+    <!-- UY END -->
+  </div>
+</section>
+
+
+</div></div>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer"><div class="inner"><div class="alignleft">
+  <p>
+  
+    &copy; 2015 王传煦
+  
+  </p>
+  <p>
+    Theme By <a href="http://googleyixia.com" >Byron</a> based on <a href="https://github.com/willerce/hexo-theme-noderce" >Noderce</a>
+  </p>
+
+</div>
+<div class="clearfix"></div></div></footer>
+  <script type="text/javascript">
+
+</script>
+
+</body>
+</html>
