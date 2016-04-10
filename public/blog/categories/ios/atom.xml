@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: iOS | 技术博客]]></title>
+  <link href="http://bbconan.github.io/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://bbconan.github.io/"/>
+  <updated>2015-03-30T22:32:29+08:00</updated>
+  <id>http://bbconan.github.io/</id>
+  <author>
+    <name><![CDATA[conan]]></name>
+    <email><![CDATA[bbconan@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Effective Objective-C 2.0 笔记5]]></title>
+    <link href="http://bbconan.github.io/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-5/"/>
+    <updated>2015-03-30T21:41:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-5</id>
+    <content type="html"><![CDATA[<h1>五、内存管理</h1>
+
+<h2>①、当一个对象调用autorelease时，它就会在稍后自行释放，通常是在2个事件loop之间。</h2>
+
+<h2>②、在ARC下，仍然需要手动清理非Objective-C对象。例如：CoreFoundation对象或者堆上malloc申请的对象。</h2>
+
+<h2>③、不需要调用[super dealloc]。<br></h2>
+
+<p>在生成和运行.cxx_destruct方法的过程中，系统自动调用了super dealloc。所以在ARC下，delloc方法可能是这个样子：
+```objc
+ &ndash; (void)dealloc {</p>
+
+<pre><code>CFRelease(_coreFoundationObject);
+free(_heapAllocatedMemoryBlob);
+</code></pre>
+
+<p> }
+```</p>
+
+<h2>④、在ARC下，系统对于retain、release、autorelease方法进行了优化，使它们不进行Objective-C的消息分发。</h2>
+
+<h2>⑤、在ARC下，使用try catch是很危险的行为。<br></h2>
+
+<p>因为ARC不会对异常的代码进行内存管理。除非增加大量样板代码来处理这个情况，但是这样没有异常发生又会降低运行时的性能，同时也会显著的增加应用的代码量。</p>
+
+<h2>⑥、一个对象引用它不拥有的对象的例子：代理模式。</h2>
+
+<h2>⑦、autoreleas pool可以嵌套。当新增一个autorelease对象时，是加到最内层的。</h2>
+
+<h2>⑧、autorelease pool是在栈中申请的，当对一个对象发送autorelease消息时，它就被加到autorelease栈的栈顶。</h2>
+
+<h2>⑨、不用对NSString、NSNumber进行retainCount操作。<br></h2>
+
+<p>首先，看个例子：
+<code>objc
+NSString *string = @"Some string";
+NSLog(@"string retainCount = %lu",[string retainCount]);
+</code>
+<code>objc
+string retainCount = 18446744073709551615
+</code>
+这个数字是2<sup>64</sup>-1。因为NSString是单例对象。string是一个编译时常量。这种情况下，编译器会制作一个特殊对象，在应用的二进制文件中替换NSString的数据。<br>
+NSNumber也是类似。用标签指针(tagged pointer)来区分各种类型的数值。在这种模式下，没有NSNumber对象。指针本身的值包含所有关于数字的消息。运行时在消息分发过程中发现一个标签指针，它会装作像一个NSNumber对象一样来操作指针的数值。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Effective Objective-C 2.0 笔记4]]></title>
+    <link href="http://bbconan.github.io/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-4/"/>
+    <updated>2015-03-30T21:19:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-4</id>
+    <content type="html"><![CDATA[<h1>四、协议和类别</h1>
+
+<h2>①、delegate要用weak修饰，因为可以避免互相引用。</h2>
+
+<h2>②、利用category可以使继承关系变为可控制的段。</h2>
+
+<h2>③、扩展里可以添加私有方法、私有属性。</h2>
+
+<h2>④、在扩展里添加类的实例变量。</h2>
+
+<h2>⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。</h2>
+
+<h2>⑥、NSDictionary中键值key是copy的，而值value是retain的。</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Effective Objective-C 2.0 笔记3]]></title>
+    <link href="http://bbconan.github.io/blog/2015/03/21/effective-objective-c-3-dot-0-bi-ji-4/"/>
+    <updated>2015-03-21T13:43:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2015/03/21/effective-objective-c-3-dot-0-bi-ji-4</id>
+    <content type="html"><![CDATA[<h1>三、接口和API设计</h1>
+
+<h2>①、处理一些从网络服务获得的数据时，对应的Model类中对外可见的属性要设为只读，只暴露需要暴露的属性。</h2>
+
+<h2>②、一种处理方式：在.h文件中，属性设置为readonly；.m文件中，对应的属性设置为readwrite。<br></h2>
+
+<p>这样的话，就可以在内部进行读写数据操作。但是同时，KVC还是可以设置属性的。因为，即使没有在.h文件中，KVC还是会直接查找有没有setXXX方法。</p>
+
+<h2>③、为可变集合提供方法，而不是把可变集合作为一个直接暴露属性。</h2>
+
+<h2>④、不要是用下划线作为方法前缀，因为下划线是系统保留字。</h2>
+
+<h2>⑤、为什么不提倡使用异常(Exception)?<br></h2>
+
+<p>ARC下，异常不是默认安全的。如果在作用域中发生异常，那么后面因该被释放的对象不会被释放。同理，在非ARC下，如果异常在对象释放前发生，那么这个对象永远不会被释放。</p>
+
+<h2>⑥、实现copying协议，需要实现单例方法- (id)copyWithZone:(NSZone *)zone<br></h2>
+
+<blockquote><p>[NSMutableArray copy] => NSArray;<br>
+ [NSArray mutableCopy] => NSMutableArray<br></p></blockquote>
+
+<h2>⑦、NSCopying协议中的复制都是浅复制。</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Effective Objective-C 2.0 读书笔记2]]></title>
+    <link href="http://bbconan.github.io/blog/2015/03/14/effective-objective-c-2-dot-0-du-shu-bi-ji-2/"/>
+    <updated>2015-03-14T14:48:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2015/03/14/effective-objective-c-2-dot-0-du-shu-bi-ji-2</id>
+    <content type="html"><![CDATA[<h1>二、对象、消息和运行时</h1>
+
+<h2>①、直接访问实例变量还是使用属性方法访问?<br></h2>
+
+<h4>(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。<br></h4>
+
+<h4>(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视copy，不会产生一个复制。<br></h4>
+
+<h4>(3)、直接访问实例变量，不会出发KVO通知。因为KVO是改写了别观察属性的set方法，在变化前和变化后，发送通知。具体文章可以<a href="http://tech.glowing.com/cn/implement-kvo/">猛击这里</a>。一个妥协的解决方案是，读数据时采用直接访问方式，写数据时采用属性方法setXXX方式。这样，既可以保证读取速度，又能保证写数据时的内存管理策略的正确性。<br></h4>
+
+<h4>(4)、在initializers和dealloc等方法中，用直接访问的方式来读、写实例变量。<br></h4>
+
+<h4>(5)、当属性是懒加载模式时，需要用属性方法getXXX来读取。</h4>
+
+<p>```objc
+&ndash; (NSString *)name {</p>
+
+<pre><code>if (!_name) {
+    _name = @"测试名字";
+}
+return _name;
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<h2>②、对象相等，必须有相同的hash值。拥有相同hash值的对象，不必相等。</h2>
+
+<h2>③、类簇模式是抽象工厂模式的一种。</h2>
+
+<h2>④、消息转发</h2>
+
+<h4>(1)、编译器会把方法转成一个标准的C函数void objc_msgSend(id self,SEL cmd,&hellip;)，其中第一个参数是接收者，第二个参数是selector，即方法。<br></h4>
+
+<h4>(2)、方法调用的过程：首先，会在类的方法列表中查找方法。如果找不到，则从继承链上的父类方法中查找。如果还找不到，则进行消息转发。<br></h4>
+
+<h4>(3)、objc_msgSend会缓存已经用过的方法，以方便以后快速调用。即使如此缓存，还是比静态绑定慢。实际情况中，消息分发系统不是应用速度的瓶颈所在。<br></h4>
+
+<h4>(4)、消息转发示意图<br></h4>
+
+<p><img src="/images/msgforward.png"><br>
+其中每一步消息接收者都有一次机会来处理消息。越往后，所花费的开销就越大。<br></p>
+
+<h4>(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。</h4>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Effective Objective-C 2.0 读书笔记1]]></title>
+    <link href="http://bbconan.github.io/blog/2015/03/05/effective-objective-c-2-dot-0-du-shu-bi-ji-1/"/>
+    <updated>2015-03-05T22:47:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2015/03/05/effective-objective-c-2-dot-0-du-shu-bi-ji-1</id>
+    <content type="html"><![CDATA[<p>最近看了一遍<a href="http://book.douban.com/subject/21370593/">《Effective Objective-C 2.0:52 Specific Ways to Improve Your iOS and OS X Programs》英文版</a>,感觉受益匪浅，学到了很多以前不了解或者不清楚的知识点。因为英文略让人捉急的原因，所以打算再看一遍这本书，同时看的过程中也做一些笔记。<br></p>
+
+<h1>一、概况</h1>
+
+<h2>①、Objective-C对象都是在堆上申请的，而不是栈上。</h2>
+
+<h2>②、不在.h文件中导入，而是在.m文件中导入头文件。<br></h2>
+
+<p>这样的原因是可以限制其他使用当前类的导入范围。例如：</br>
+```objc
+// EOCPerson.h</p>
+
+<h1>import &lt;Foundation/Foundation.h></h1>
+
+<p>@class EOCEmployer;
+//EOCPerson.m</p>
+
+<h1>import “EOCPerson.h"</h1>
+
+<h1>import “EOCEmployer.h"</h1>
+
+<p>```
+这样，其他需要导入EOCPerson.h的类，就不需要导入EOCEmployer.h文件了。同时，也可以尽量的避免互相引用。</p>
+
+<h2>③、用类型常量代替＃define来定义常量，因为前者会带有类型信息。</br></h2>
+
+<p>如果只在当前类中使用，只需在.m文件中定义static const AClass kVarible = a。如果需要暴露给其他类使用(例如，通知的名字),.h文件  extern NSString <em>const AStringConst;
+.m文件 NSString </em>const AStringConst = @“a"</p>
+]]></content>
+  </entry>
+  
+</feed>

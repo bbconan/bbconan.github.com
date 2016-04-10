@@ -1,0 +1,7 @@
+<div class="highlight"><pre><span class="n">ASIFormDataRequest</span>  <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">ASIFormDataRequest</span> <span class="nl">requestWithURL:</span><span class="n">url</span><span class="p">];</span>
+<span class="n">__weak</span> <span class="n">ASIFormDataRequest</span> <span class="o">*</span><span class="n">weakRequest</span> <span class="o">=</span> <span class="n">request</span><span class="p">;</span>
+<span class="n">__weak</span> <span class="n">typeof</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+<span class="p">[</span><span class="n">request</span> <span class="nl">setCompletionBlock:</span><span class="o">^</span><span class="p">{</span>
+<span class="p">[</span><span class="n">weakRequest</span> <span class="n">xxMethod</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>

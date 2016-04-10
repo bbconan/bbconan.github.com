@@ -1,0 +1,14 @@
+<div class="highlight"><pre> <span class="c1">// 允许代码使用UICollectionView如同它可以在iOS SDK 5使用一样。</span>
+ <span class="c1">// http://developer.apple.com/legacy/mac/library/#documentation/DeveloperTools/gcc-3.3/gcc/compatibility_005falias.html</span>
+ <span class="err">#</span><span class="k">if</span> <span class="n">__IPHONE_OS_VERSION_MAX_ALLOWED</span> <span class="o">&lt;</span> <span class="mi">60000</span>
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewController</span> <span class="n">PSTCollectionViewController</span><span class="p">;</span> 
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionView</span> <span class="n">PSTCollectionView</span><span class="p">;</span>
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionReusableView</span> <span class="n">PSTCollectionReusableView</span><span class="p">;</span>
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewCell</span> <span class="n">PSTCollectionViewCell</span><span class="p">;</span> 
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewLayout</span> <span class="n">PSTCollectionViewLayout</span><span class="p">;</span>
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewFlowLayout</span> <span class="n">PSTCollectionViewFlowLayout</span><span class="p">;</span> 
+ <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewLayoutAttributes</span> <span class="n">PSTCollectionViewLayoutAttributes</span><span class="p">;</span>
+ <span class="k">@protocol</span> <span class="nc">UICollectionViewDataSource</span> <span class="o">&lt;</span><span class="n">PSTCollectionViewDataSource</span><span class="o">&gt;</span> <span class="k">@end</span>
+ <span class="k">@protocol</span> <span class="nc">UICollectionViewDelegate</span> <span class="o">&lt;</span><span class="n">PSTCollectionViewDelegate</span><span class="o">&gt;</span> <span class="k">@end</span> 
+ <span class="err">#</span><span class="n">endif</span>
+</pre></div>

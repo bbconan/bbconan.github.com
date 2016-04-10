@@ -1,0 +1,883 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>技术博客</title>
+	<meta name="author" content="conan">
+
+	
+	<meta name="description" content="Mar 30th, 2015 iOS Effective Objective-C 2.0 笔记5 五、内存管理 ①、当一个对象调用autorelease时，它就会在稍后自行释放，通常是在2个事件loop之间。 ②、在ARC下，仍然需要手动清理非Objective-C对象。例如： &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="技术博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://bbconan.github.io/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		document.write("<img src='http://www.gravatar.com/avatar/" + MD5("bbconan@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+	</script>
+</div>
+<h1><a href="/">技术博客</a></h1>
+<p class="subtitle">学无止境。</p>
+<nav id="main-nav"><ul class="main-navigation">
+  <li><a href="/">最新文章</a></li>
+  <li><a href="/blog/archives">文章列表</a></li>
+  <li><a href="/blog/categories">分类列表</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		<a class="weibo" href="http://www.weibo.com/1729937805" title="Weibo">Weibo</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner">
+<div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-30T21:41:00+08:00" data-updated="true" itemprop="datePublished">Mar 30<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-5/" itemprop="url">Effective Objective-C 2.0 笔记5</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h1>五、内存管理</h1>
+
+<h2>①、当一个对象调用autorelease时，它就会在稍后自行释放，通常是在2个事件loop之间。</h2>
+
+<h2>②、在ARC下，仍然需要手动清理非Objective-C对象。例如：CoreFoundation对象或者堆上malloc申请的对象。</h2>
+
+<h2>③、不需要调用[super dealloc]。<br></h2>
+
+<p>在生成和运行.cxx_destruct方法的过程中，系统自动调用了super dealloc。所以在ARC下，delloc方法可能是这个样子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">dealloc</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">CFRelease</span><span class="p">(</span><span class="n">_coreFoundationObject</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">free</span><span class="p">(</span><span class="n">_heapAllocatedMemoryBlob</span><span class="p">);</span>
+</span><span class='line'> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>④、在ARC下，系统对于retain、release、autorelease方法进行了优化，使它们不进行Objective-C的消息分发。</h2>
+
+<h2>⑤、在ARC下，使用try catch是很危险的行为。<br></h2>
+
+<p>因为ARC不会对异常的代码进行内存管理。除非增加大量样板代码来处理这个情况，但是这样没有异常发生又会降低运行时的性能，同时也会显著的增加应用的代码量。</p>
+
+<h2>⑥、一个对象引用它不拥有的对象的例子：代理模式。</h2>
+
+<h2>⑦、autoreleas pool可以嵌套。当新增一个autorelease对象时，是加到最内层的。</h2>
+
+<h2>⑧、autorelease pool是在栈中申请的，当对一个对象发送autorelease消息时，它就被加到autorelease栈的栈顶。</h2>
+
+<h2>⑨、不用对NSString、NSNumber进行retainCount操作。<br></h2>
+
+<p>首先，看个例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="s">@&quot;Some string&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;string retainCount = %lu&quot;</span><span class="p">,[</span><span class="n">string</span> <span class="n">retainCount</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">string</span> <span class="n">retainCount</span> <span class="o">=</span> <span class="mi">18446744073709551615</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个数字是2<sup>64</sup>-1。因为NSString是单例对象。string是一个编译时常量。这种情况下，编译器会制作一个特殊对象，在应用的二进制文件中替换NSString的数据。<br>
+NSNumber也是类似。用标签指针(tagged pointer)来区分各种类型的数值。在这种模式下，没有NSNumber对象。指针本身的值包含所有关于数字的消息。运行时在消息分发过程中发现一个标签指针，它会装作像一个NSNumber对象一样来操作指针的数值。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-30T21:19:00+08:00" data-updated="true" itemprop="datePublished">Mar 30<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-4/" itemprop="url">Effective Objective-C 2.0 笔记4</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h1>四、协议和类别</h1>
+
+<h2>①、delegate要用weak修饰，因为可以避免互相引用。</h2>
+
+<h2>②、利用category可以使继承关系变为可控制的段。</h2>
+
+<h2>③、扩展里可以添加私有方法、私有属性。</h2>
+
+<h2>④、在扩展里添加类的实例变量。</h2>
+
+<h2>⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。</h2>
+
+<h2>⑥、NSDictionary中键值key是copy的，而值value是retain的。</h2>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-21T13:43:00+08:00" data-updated="true" itemprop="datePublished">Mar 21<span>st</span>, 2015</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/03/21/effective-objective-c-3-dot-0-bi-ji-4/" itemprop="url">Effective Objective-C 2.0 笔记3</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h1>三、接口和API设计</h1>
+
+<h2>①、处理一些从网络服务获得的数据时，对应的Model类中对外可见的属性要设为只读，只暴露需要暴露的属性。</h2>
+
+<h2>②、一种处理方式：在.h文件中，属性设置为readonly；.m文件中，对应的属性设置为readwrite。<br></h2>
+
+<p>这样的话，就可以在内部进行读写数据操作。但是同时，KVC还是可以设置属性的。因为，即使没有在.h文件中，KVC还是会直接查找有没有setXXX方法。</p>
+
+<h2>③、为可变集合提供方法，而不是把可变集合作为一个直接暴露属性。</h2>
+
+<h2>④、不要是用下划线作为方法前缀，因为下划线是系统保留字。</h2>
+
+<h2>⑤、为什么不提倡使用异常(Exception)?<br></h2>
+
+<p>ARC下，异常不是默认安全的。如果在作用域中发生异常，那么后面因该被释放的对象不会被释放。同理，在非ARC下，如果异常在对象释放前发生，那么这个对象永远不会被释放。</p>
+
+<h2>⑥、实现copying协议，需要实现单例方法- (id)copyWithZone:(NSZone *)zone<br></h2>
+
+<blockquote><p>[NSMutableArray copy] => NSArray;<br>
+ [NSArray mutableCopy] => NSMutableArray<br></p></blockquote>
+
+<h2>⑦、NSCopying协议中的复制都是浅复制。</h2>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-14T14:48:00+08:00" data-updated="true" itemprop="datePublished">Mar 14<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/03/14/effective-objective-c-2-dot-0-du-shu-bi-ji-2/" itemprop="url">Effective Objective-C 2.0 读书笔记2</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h1>二、对象、消息和运行时</h1>
+
+<h2>①、直接访问实例变量还是使用属性方法访问?<br></h2>
+
+<h4>(1)、直接访问实例变量速度快，因为不经过Objective-C的方法分发系统,而是直接用的变量在内存中的存储地址。<br></h4>
+
+<h4>(2)、同时，直接访问会忽视属性property的内存管理语法。例如，如果一个属性定义为copy，直接访问就会忽视copy，不会产生一个复制。<br></h4>
+
+<h4>(3)、直接访问实例变量，不会出发KVO通知。因为KVO是改写了别观察属性的set方法，在变化前和变化后，发送通知。具体文章可以<a href="http://tech.glowing.com/cn/implement-kvo/">猛击这里</a>。一个妥协的解决方案是，读数据时采用直接访问方式，写数据时采用属性方法setXXX方式。这样，既可以保证读取速度，又能保证写数据时的内存管理策略的正确性。<br></h4>
+
+<h4>(4)、在initializers和dealloc等方法中，用直接访问的方式来读、写实例变量。<br></h4>
+
+<h4>(5)、当属性是懒加载模式时，需要用属性方法getXXX来读取。</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">name</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">_name</span> <span class="o">=</span> <span class="s">@&quot;测试名字&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">_name</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>②、对象相等，必须有相同的hash值。拥有相同hash值的对象，不必相等。</h2>
+
+<h2>③、类簇模式是抽象工厂模式的一种。</h2>
+
+<h2>④、消息转发</h2>
+
+<h4>(1)、编译器会把方法转成一个标准的C函数void objc_msgSend(id self,SEL cmd,&hellip;)，其中第一个参数是接收者，第二个参数是selector，即方法。<br></h4>
+
+<h4>(2)、方法调用的过程：首先，会在类的方法列表中查找方法。如果找不到，则从继承链上的父类方法中查找。如果还找不到，则进行消息转发。<br></h4>
+
+<h4>(3)、objc_msgSend会缓存已经用过的方法，以方便以后快速调用。即使如此缓存，还是比静态绑定慢。实际情况中，消息分发系统不是应用速度的瓶颈所在。<br></h4>
+
+<h4>(4)、消息转发示意图<br></h4>
+
+<p><img src="/images/msgforward.png"><br>
+其中每一步消息接收者都有一次机会来处理消息。越往后，所花费的开销就越大。<br></p>
+
+<h4>(5)、从集合类中取出元素的时候，会用到Objective-C的内省方法。因为取出的元素不是强类型，通常是id类型。在编译时，对象的类型是未知的，就需要使用内省方法。比较对象时，要用内省方法，而不是直接比较。因为对象可能实现了消息转发。例如，NSProxy。</h4>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-03-05T22:47:00+08:00" data-updated="true" itemprop="datePublished">Mar 5<span>th</span>, 2015</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2015/03/05/effective-objective-c-2-dot-0-du-shu-bi-ji-1/" itemprop="url">Effective Objective-C 2.0 读书笔记1</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>最近看了一遍<a href="http://book.douban.com/subject/21370593/">《Effective Objective-C 2.0:52 Specific Ways to Improve Your iOS and OS X Programs》英文版</a>,感觉受益匪浅，学到了很多以前不了解或者不清楚的知识点。因为英文略让人捉急的原因，所以打算再看一遍这本书，同时看的过程中也做一些笔记。<br></p>
+
+<h1>一、概况</h1>
+
+<h2>①、Objective-C对象都是在堆上申请的，而不是栈上。</h2>
+
+<h2>②、不在.h文件中导入，而是在.m文件中导入头文件。<br></h2>
+
+<p>这样的原因是可以限制其他使用当前类的导入范围。例如：</br></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// EOCPerson.h</span>
+</span><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@class</span> <span class="nc">EOCEmployer</span>;
+</span><span class='line'><span class="c1">//EOCPerson.m</span>
+</span><span class='line'><span class="cp">#import “EOCPerson.h&quot;</span>
+</span><span class='line'><span class="cp">#import “EOCEmployer.h&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样，其他需要导入EOCPerson.h的类，就不需要导入EOCEmployer.h文件了。同时，也可以尽量的避免互相引用。</p>
+
+<h2>③、用类型常量代替＃define来定义常量，因为前者会带有类型信息。</br></h2>
+
+<p>如果只在当前类中使用，只需在.m文件中定义static const AClass kVarible = a。如果需要暴露给其他类使用(例如，通知的名字),.h文件  extern NSString <em>const AStringConst;
+.m文件 NSString </em>const AStringConst = @“a&#8221;</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-20T21:15:00+08:00" data-updated="true" itemprop="datePublished">Nov 20<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/11/20/zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/" itemprop="url">最近积累的几个Objective-C知识点</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h3>1、__unused修饰符</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;__unused宏（事实上是<strong>attribute</strong>((unused))这个GCC的编译器属性，更多请参考<a href="http://nshipster.com/__attribute__/">mattt大神的博客</a>）告诉编译器“如果我没用到这个变量，不要警告我”。</p>
+
+<h3>2、三元表达式的简写</h3>
+
+<p>?:是C中唯一一个三目运算符，用来替代简单的if-else语句，同时也是可以两元使用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="n">inputString</span> <span class="o">?:</span> <span class="s">@&quot;default&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="n">inputString</span> <span class="o">?</span> <span class="n">inputString</span> <span class="o">:</span> <span class="s">@&quot;default&quot;</span><span class="p">;</span> <span class="c1">// 等价</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3、如果block的参数列表为空的话，相当于可变参数（不是void）。</h3>
+
+<h3>4、@compatibility_alias:允许现有类有不同的名称做别名。比如PSTCollectionView使用@compatibility_alias来显著提高对UICollectionView的向后兼容的直接替换的使用体验。(具体可参考NSHipster的文章)</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="c1">// 允许代码使用UICollectionView如同它可以在iOS SDK 5使用一样。</span>
+</span><span class='line'> <span class="c1">// http://developer.apple.com/legacy/mac/library/#documentation/DeveloperTools/gcc-3.3/gcc/compatibility_005falias.html</span>
+</span><span class='line'> <span class="err">#</span><span class="k">if</span> <span class="n">__IPHONE_OS_VERSION_MAX_ALLOWED</span> <span class="o">&lt;</span> <span class="mi">60000</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewController</span> <span class="n">PSTCollectionViewController</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionView</span> <span class="n">PSTCollectionView</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionReusableView</span> <span class="n">PSTCollectionReusableView</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewCell</span> <span class="n">PSTCollectionViewCell</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewLayout</span> <span class="n">PSTCollectionViewLayout</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewFlowLayout</span> <span class="n">PSTCollectionViewFlowLayout</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewLayoutAttributes</span> <span class="n">PSTCollectionViewLayoutAttributes</span><span class="p">;</span>
+</span><span class='line'> <span class="k">@protocol</span> <span class="nc">UICollectionViewDataSource</span> <span class="o">&lt;</span><span class="n">PSTCollectionViewDataSource</span><span class="o">&gt;</span> <span class="k">@end</span>
+</span><span class='line'> <span class="k">@protocol</span> <span class="nc">UICollectionViewDelegate</span> <span class="o">&lt;</span><span class="n">PSTCollectionViewDelegate</span><span class="o">&gt;</span> <span class="k">@end</span>
+</span><span class='line'> <span class="err">#</span><span class="n">endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5、<strong>attribute</strong>((constructor))</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;若函数被设定为constructor属性，则该函数会在main（）函数执行之前被自动的执行</p>
+
+<h3>6、看到QQ群里讨论，GCD最多能创建多少线程</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;66＝64（GCD线程池的最大值） + 主线程 + 其他随机非GCD线程。<a href="http://stackoverflow.com/questions/7213845/number-of-threads-created-by-gcd">来源</a></p>
+
+<h3>7、在Darwin层建立Notification监听的方法</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在锁屏和解锁的时候，iOS系统会发送通知，经过搜索，得知大概有下面3种通知：<br>
+(1)、com.apple.iokit.hid.displayStatus<br>
+锁屏后通知会发出消息，在屏幕变亮后，没有滑动解锁，系统也会发出该通知。<br>
+(2)、com.apple.springboard.lockstate<br>
+在系统锁屏和滑动解锁后，会发出该通知<br>
+(3)、com.apple.springboard.lockcomplete
+锁屏后，发出该通知。这个通知总会在(2)通知后发出。<br></p>
+
+<p>判断屏幕是否有锁的方法<br></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="n">CFNotificationCenterAddObserver</span><span class="p">(</span><span class="n">CFNotificationCenterGetDarwinNotifyCenter</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">displayStatusChanged</span><span class="p">,</span> <span class="n">CFSTR</span><span class="p">(</span><span class="s">&quot;com.apple.iokit.hid.displayStatus&quot;</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">CFNotificationSuspensionBehaviorDeliverImmediately</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">displayStatusChanged</span><span class="p">(</span><span class="n">CFNotificationCenterRef</span> <span class="n">center</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">observer</span><span class="p">,</span> <span class="n">CFStringRef</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="n">CFDictionaryRef</span> <span class="n">userInfo</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;event received!&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">uint64_t</span> <span class="n">state</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">token</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">notify_register_check</span><span class="p">(</span><span class="s">&quot;com.apple.iokit.hid.displayStatus&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">notify_get_state</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">state</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">notify_cancel</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3、宏定义</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="err">#</span><span class="n">define</span> <span class="nb">nil</span> <span class="n">__DARWIN_NULL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>nil用于表示空的实例对象<br></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define Nil __DARWIN_NULL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nil用于表示空类对象</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-16T23:25:00+08:00" data-updated="true" itemprop="datePublished">Nov 16<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/swift/'>Swift</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/11/16/swiftxue-xi-bi-ji/" itemprop="url">Swift学习笔记</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h3>一、</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在Objective-C的</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">updateStatus</span><span class="p">)</span>   <span class="nl">onThread:</span><span class="p">[</span><span class="n">NSThread</span> <span class="n">mainThread</span><span class="p">]</span> <span class="nl">withObject:</span><span class="nb">nil</span> <span class="nl">waitUntilDone:</span><span class="n">NO</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在Swift中是没有performSelector方法的。替代方法有2种</p>
+
+<h4>1、设置Timer定时器</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSTimer</span><span class="p">.</span><span class="n">scheduledTimerWithTimeInterval</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="nl">target:</span> <span class="n">self</span><span class="p">,</span> <span class="nl">selector:</span> <span class="n">Selector</span><span class="p">(</span><span class="s">&quot;updateStatus&quot;</span><span class="p">),</span> <span class="nl">userInfo:</span> <span class="nb">nil</span><span class="p">,</span> <span class="nl">repeats:</span> <span class="n">false</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2、利用GCD定时器</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_after</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// your function here</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>二、</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">text</span><span class="p">.</span><span class="n">boundingRectWithSize</span><span class="p">(</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">CGFloat</span><span class="p">.</span><span class="n">max</span><span class="p">),</span> <span class="nl">options:</span> <span class="n">NSStringDrawingOptions</span><span class="p">.</span><span class="n">TruncatesLastVisibleLine</span> <span class="o">|</span> <span class="n">NSStringDrawingOptions</span><span class="p">.</span><span class="n">UsesLineFragmentOrigin</span> <span class="o">|</span> <span class="n">NSStringDrawingOptions</span><span class="p">.</span><span class="n">UsesFontLeading</span><span class="p">,</span> <span class="nl">attributes:</span> <span class="n">attribute</span><span class="p">,</span> <span class="nl">context:</span> <span class="nb">nil</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这段正常的代码在iOS8.1、Xcode6.1下会报错。搜了一下发现<a href="http://stackoverflow.com/a/24065414/4049468">这个</a>。意思是说当吧target设为OS X 10.10时，就正常。如果设为iOS8 SDK，就会警告异常。NSStringDrawingOptions被Swift作为enum:Int类型，而不是struct:RawOptionSet，这是Apple的bug。PS:我第一次向Apple报告iOS SDK的bug。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;同时，<a href="http://stackoverflow.com/a/25029448/4049468">这里</a>给出了一个解决方法。就是在Objective-C中写好多个option的连接方法，然后在Swift中调用该方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSStringDrawingOptions</span><span class="p">)</span><span class="nf">combine:</span><span class="p">(</span><span class="n">NSStringDrawingOptions</span><span class="p">)</span><span class="nv">option1</span> <span class="nf">with:</span><span class="p">(</span><span class="n">NSStringDrawingOptions</span><span class="p">)</span><span class="nv">option2</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">option1</span> <span class="o">|</span> <span class="n">option2</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">let</span> <span class="n">boundingRect</span> <span class="o">=</span> <span class="s">&quot;string&quot;</span><span class="p">.</span><span class="n">boundingRectWithSize</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nl">options:</span> <span class="n">StringDrawingOptions</span><span class="p">.</span><span class="n">combine</span><span class="p">(.</span><span class="n">UsesLineFragmentOrigin</span><span class="p">,</span> <span class="nl">with:</span> <span class="p">.</span><span class="n">UsesFontLeading</span><span class="p">),</span> <span class="nl">attributes:</span><span class="nb">nil</span><span class="p">,</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-16T23:06:00+08:00" data-updated="true" itemprop="datePublished">Nov 16<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/11/16/uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/" itemprop="url">UIView中自定义透明矩形的实现</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;在项目中遇到一个需求：做一个二维码扫描的界面。要求是背景黑色透明度80%，中间有个白色透明框</p>
+
+
+		
+		<a href="/blog/2014/11/16/uiviewzhong-zi-ding-yi-tou-ming-ju-xing-de-shi-xian/" class="more-link">阅读全文 &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-20T18:08:00+08:00" data-updated="true" itemprop="datePublished">Jul 20<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/20/swift-notes/" itemprop="url">记录碰到的几个问题</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h4>1、在ASIFormDataRequest的方法中，使用block的一个问题</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="n">__weak</span> <span class="n">ASIFormDataRequest</span>  <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">ASIFormDataRequest</span> <span class="nl">requestWithURL:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">request</span> <span class="nl">setCompletionBlock:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>   <span class="p">[</span><span class="n">request</span> <span class="n">xxMethod</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<!--阅读更多-->
+
+
+<p>这段代码，在debug scheme下可以正常运行，但是在发布时的release scheme下有bug。因为编译器优化时_<em>_weak指针会被置为nil，会被释放所以，下面的代码就无法执行。同理，</em>__unsafe_unretain变量也会存在同样的问题。解决方法是：强制持有指针</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">ASIFormDataRequest</span>  <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">ASIFormDataRequest</span> <span class="nl">requestWithURL:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'><span class="n">__weak</span> <span class="n">ASIFormDataRequest</span> <span class="o">*</span><span class="n">weakRequest</span> <span class="o">=</span> <span class="n">request</span><span class="p">;</span>
+</span><span class='line'><span class="n">__weak</span> <span class="n">typeof</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="n">weakSelf</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">request</span> <span class="nl">setCompletionBlock:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'><span class="p">[</span><span class="n">weakRequest</span> <span class="n">xxMethod</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>参考资料</h4>
+
+<p><a href="http://stackoverflow.com/questions/7205128/fix-warning-capturing-an-object-strongly-in-this-block-is-likely-to-lead-to-a/">http://stackoverflow.com/questions/7205128/fix-warning-capturing-an-object-strongly-in-this-block-is-likely-to-lead-to-a/</a></p>
+
+<h4>2、一些技巧</h4>
+
+<h5>(1)、如何删掉所有的subView</h5>
+
+<p>  常见的方法就是遍历view的subviews，然后逐个移除。这里介绍两个简单的方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">someNSView</span> <span class="nl">setSubviews:</span><span class="p">[</span><span class="n">NSArray</span> <span class="n">array</span><span class="p">]]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>和</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">someUIView</span> <span class="n">subviews</span><span class="p">]</span> <span class="nl">makeObjectsPerformSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">removeFromSuperview</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>(2)、强制去除Xcode的编译警告</h5>
+
+<p>有时候，Xcode会提示一些代码编写存在的warnings，以让开发者能修改完善。但有时候，提示的warnings是正确的，不需要修改。怎么才能去除Xcode的警告呢？<br></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">\#</span><span class="n">define</span> <span class="n">SuppressPerformSelectorLeakWarning</span><span class="p">(</span><span class="n">Stuff</span><span class="p">)</span>
+</span><span class='line'><span class="k">do</span> <span class="p">{</span> \
+</span><span class='line'><span class="n">_Pragma</span><span class="p">(</span><span class="s">&quot;clang diagnostic push&quot;</span><span class="p">)</span> \
+</span><span class='line'><span class="n">_Pragma</span><span class="p">(</span><span class="s">&quot;clang diagnostic ignored </span><span class="se">\&quot;</span><span class="s">-Warc-performSelector-leaks</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">Stuff</span><span class="p">;</span> \
+</span><span class='line'><span class="n">_Pragma</span><span class="p">(</span><span class="s">&quot;clang diagnostic pop&quot;</span><span class="p">)</span> \
+</span><span class='line'><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>_Pargma的处理方式是把字符串常量的内容（在删除两边的双引号，并把字符串常量内部的\&ldquo;替换为&#8221;，把&#92;替换为\之后）看成是#pragma指令中出现的预处理器标记。 这段代码的基本流程:</p>
+
+<pre><code>     1. push 当前警告入栈
+
+     2. 忽略我们要消除的警告
+
+     3. 执行会产生警告的代码
+
+     4. pop 警告出栈——恢复之前的状态
+</code></pre>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-20T18:08:00+08:00" data-updated="true" itemprop="datePublished">Jul 20<span>th</span>, 2014</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>iOS</a>
+
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/2014/07/20/ji-lu-yi-xie-wen-ti/" itemprop="url">记录碰到的几个问题</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h4>1、在ASIFormDataRequest的方法中，使用block的一个问题</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="n">__weak</span> <span class="n">ASIFormDataRequest</span>  <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">ASIFormDataRequest</span> <span class="nl">requestWithURL:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">request</span> <span class="nl">setCompletionBlock:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>   <span class="p">[</span><span class="n">request</span> <span class="n">xxMethod</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+		
+		<a href="/blog/2014/07/20/ji-lu-yi-xie-wen-ti/" class="more-link">阅读全文 &rarr;</a>
+	</div>
+
+</article>
+
+</div>
+<nav id="pagenavi">
+    
+    
+        <a href="/blog/page/2/" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+			</div>
+			<footer id="footer" class="inner"><p>
+  Copyright &copy; 2015 - conan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<div class="highlight"><pre><span class="cp">#include &lt;sys/types.h&gt;</span>
+<span class="cp">#include &lt;sys/socket.h&gt;</span>
+<span class="cp">#include &lt;ifaddrs.h&gt;</span>
+<span class="cp">#include &lt;arpa/inet.h&gt;</span>
+<span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">getBroadcastAddress</span>
+<span class="p">{</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">broadCastAddress</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">interfaces</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">temp_addr</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">success</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// retrieve the current interfaces - returns 0 on success</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="n">getifaddrs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">interfaces</span><span class="p">);</span>
+     <span class="k">if</span> <span class="p">(</span><span class="n">success</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">temp_addr</span> <span class="o">=</span> <span class="n">interfaces</span><span class="p">;</span>
+      <span class="k">while</span><span class="p">(</span><span class="n">temp_addr</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="c1">// check if interface is en0 which is the wifi connection on the iPhone</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="o">-&gt;</span><span class="n">sa_family</span> <span class="o">==</span> <span class="n">AF_INET</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span><span class="p">([[</span><span class="n">NSString</span> <span class="nl">stringWithUTF8String:</span><span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_name</span><span class="p">]</span>                <span class="nl">isEqualToString:</span><span class="s">@&quot;en0&quot;</span><span class="p">])</span>
+                <span class="p">{</span>
+                    <span class="n">broadCastAddress</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithUTF8String:</span><span class="n">inet_ntoa</span><span class="p">(((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_dstaddr</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">)];</span>
+      <span class="p">}</span>
+     <span class="p">}</span>
+       <span class="n">temp_addr</span> <span class="o">=</span> <span class="n">temp_addr</span><span class="o">-&gt;</span><span class="n">ifa_next</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+      <span class="n">freeifaddrs</span><span class="p">(</span><span class="n">interfaces</span><span class="p">);</span>
+      <span class="k">return</span> <span class="n">broadCastAddress</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>

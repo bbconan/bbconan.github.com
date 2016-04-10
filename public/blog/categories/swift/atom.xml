@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Swift | 技术博客]]></title>
+  <link href="http://bbconan.github.io/blog/categories/swift/atom.xml" rel="self"/>
+  <link href="http://bbconan.github.io/"/>
+  <updated>2015-03-30T22:32:29+08:00</updated>
+  <id>http://bbconan.github.io/</id>
+  <author>
+    <name><![CDATA[conan]]></name>
+    <email><![CDATA[bbconan@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Swift学习笔记]]></title>
+    <link href="http://bbconan.github.io/blog/2014/11/16/swiftxue-xi-bi-ji/"/>
+    <updated>2014-11-16T23:25:00+08:00</updated>
+    <id>http://bbconan.github.io/blog/2014/11/16/swiftxue-xi-bi-ji</id>
+    <content type="html"><![CDATA[<h3>一、</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在Objective-C的
+<code>objc
+[self performSelector:@selector(updateStatus)   onThread:[NSThread mainThread] withObject:nil waitUntilDone:NO];
+</code>
+在Swift中是没有performSelector方法的。替代方法有2种</p>
+
+<h4>1、设置Timer定时器</h4>
+
+<p><code>
+NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("updateStatus"), userInfo: nil, repeats: false)
+</code></p>
+
+<h4>2、利用GCD定时器</h4>
+
+<p>```
+dispatch_after(1, dispatch_get_main_queue(), {</p>
+
+<pre><code>// your function here
+</code></pre>
+
+<p>})
+```</p>
+
+<h3>二、</h3>
+
+<p><code>
+text.boundingRectWithSize(CGSizeMake(w, CGFloat.max), options: NSStringDrawingOptions.TruncatesLastVisibleLine | NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.UsesFontLeading, attributes: attribute, context: nil)
+</code>
+&nbsp;&nbsp;&nbsp;&nbsp;这段正常的代码在iOS8.1、Xcode6.1下会报错。搜了一下发现<a href="http://stackoverflow.com/a/24065414/4049468">这个</a>。意思是说当吧target设为OS X 10.10时，就正常。如果设为iOS8 SDK，就会警告异常。NSStringDrawingOptions被Swift作为enum:Int类型，而不是struct:RawOptionSet，这是Apple的bug。PS:我第一次向Apple报告iOS SDK的bug。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;同时，<a href="http://stackoverflow.com/a/25029448/4049468">这里</a>给出了一个解决方法。就是在Objective-C中写好多个option的连接方法，然后在Swift中调用该方法。
+```objc
++ (NSStringDrawingOptions)combine:(NSStringDrawingOptions)option1 with:(NSStringDrawingOptions)option2
+{</p>
+
+<pre><code>return option1 | option2;
+</code></pre>
+
+<p>}
+<code>
+</code>
+let boundingRect = &ldquo;string&rdquo;.boundingRectWithSize(size, options: StringDrawingOptions.combine(.UsesLineFragmentOrigin, with: .UsesFontLeading), attributes:nil, context:nil)
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

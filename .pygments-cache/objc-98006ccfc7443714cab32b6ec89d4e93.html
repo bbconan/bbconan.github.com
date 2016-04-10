@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span class="err">\#</span><span class="n">define</span> <span class="n">SuppressPerformSelectorLeakWarning</span><span class="p">(</span><span class="n">Stuff</span><span class="p">)</span> 
+<span class="k">do</span> <span class="p">{</span> \
+<span class="n">_Pragma</span><span class="p">(</span><span class="s">&quot;clang diagnostic push&quot;</span><span class="p">)</span> \
+<span class="n">_Pragma</span><span class="p">(</span><span class="s">&quot;clang diagnostic ignored </span><span class="se">\&quot;</span><span class="s">-Warc-performSelector-leaks</span><span class="se">\&quot;</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">Stuff</span><span class="p">;</span> \
+<span class="n">_Pragma</span><span class="p">(</span><span class="s">&quot;clang diagnostic pop&quot;</span><span class="p">)</span> \
+<span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>

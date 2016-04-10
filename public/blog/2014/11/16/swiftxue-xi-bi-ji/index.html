@@ -1,0 +1,198 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Swift学习笔记 - 技术博客</title>
+	<meta name="author" content="conan">
+
+	
+	<meta name="description" content="Swift学习笔记 一、 &nbsp;&nbsp;&nbsp;&nbsp;在Objective-C的 1
+[self performSelector:@selector(updateStatus) onThread:[NSThread mainThread] withObject:nil &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="技术博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://bbconan.github.io/blog/2014/11/16/swiftxue-xi-bi-ji/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		document.write("<img src='http://www.gravatar.com/avatar/" + MD5("bbconan@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+	</script>
+</div>
+<h1><a href="/">技术博客</a></h1>
+<p class="subtitle">学无止境。</p>
+<nav id="main-nav"><ul class="main-navigation">
+  <li><a href="/">最新文章</a></li>
+  <li><a href="/blog/archives">文章列表</a></li>
+  <li><a href="/blog/categories">分类列表</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		<a class="weibo" href="http://www.weibo.com/1729937805" title="Weibo">Weibo</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Swift学习笔记</h1>
+	<div class="entry-content" itemprop="articleBody"><h3>一、</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在Objective-C的</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">updateStatus</span><span class="p">)</span>   <span class="nl">onThread:</span><span class="p">[</span><span class="n">NSThread</span> <span class="n">mainThread</span><span class="p">]</span> <span class="nl">withObject:</span><span class="nb">nil</span> <span class="nl">waitUntilDone:</span><span class="n">NO</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在Swift中是没有performSelector方法的。替代方法有2种</p>
+
+<h4>1、设置Timer定时器</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSTimer</span><span class="p">.</span><span class="n">scheduledTimerWithTimeInterval</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="nl">target:</span> <span class="n">self</span><span class="p">,</span> <span class="nl">selector:</span> <span class="n">Selector</span><span class="p">(</span><span class="s">&quot;updateStatus&quot;</span><span class="p">),</span> <span class="nl">userInfo:</span> <span class="nb">nil</span><span class="p">,</span> <span class="nl">repeats:</span> <span class="n">false</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>2、利用GCD定时器</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">dispatch_after</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// your function here</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>二、</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">text</span><span class="p">.</span><span class="n">boundingRectWithSize</span><span class="p">(</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">CGFloat</span><span class="p">.</span><span class="n">max</span><span class="p">),</span> <span class="nl">options:</span> <span class="n">NSStringDrawingOptions</span><span class="p">.</span><span class="n">TruncatesLastVisibleLine</span> <span class="o">|</span> <span class="n">NSStringDrawingOptions</span><span class="p">.</span><span class="n">UsesLineFragmentOrigin</span> <span class="o">|</span> <span class="n">NSStringDrawingOptions</span><span class="p">.</span><span class="n">UsesFontLeading</span><span class="p">,</span> <span class="nl">attributes:</span> <span class="n">attribute</span><span class="p">,</span> <span class="nl">context:</span> <span class="nb">nil</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这段正常的代码在iOS8.1、Xcode6.1下会报错。搜了一下发现<a href="http://stackoverflow.com/a/24065414/4049468">这个</a>。意思是说当吧target设为OS X 10.10时，就正常。如果设为iOS8 SDK，就会警告异常。NSStringDrawingOptions被Swift作为enum:Int类型，而不是struct:RawOptionSet，这是Apple的bug。PS:我第一次向Apple报告iOS SDK的bug。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;同时，<a href="http://stackoverflow.com/a/25029448/4049468">这里</a>给出了一个解决方法。就是在Objective-C中写好多个option的连接方法，然后在Swift中调用该方法。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSStringDrawingOptions</span><span class="p">)</span><span class="nf">combine:</span><span class="p">(</span><span class="n">NSStringDrawingOptions</span><span class="p">)</span><span class="nv">option1</span> <span class="nf">with:</span><span class="p">(</span><span class="n">NSStringDrawingOptions</span><span class="p">)</span><span class="nv">option2</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">option1</span> <span class="o">|</span> <span class="n">option2</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">let</span> <span class="n">boundingRect</span> <span class="o">=</span> <span class="s">&quot;string&quot;</span><span class="p">.</span><span class="n">boundingRectWithSize</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nl">options:</span> <span class="n">StringDrawingOptions</span><span class="p">.</span><span class="n">combine</span><span class="p">(.</span><span class="n">UsesLineFragmentOrigin</span><span class="p">,</span> <span class="nl">with:</span> <span class="p">.</span><span class="n">UsesFontLeading</span><span class="p">),</span> <span class="nl">attributes:</span><span class="nb">nil</span><span class="p">,</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+	
+
+  <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=1825414" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1365317553086911" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+
+</div>
+</div>
+
+
+<section id="comment">
+    <h1 class="title">评论</h1>
+	<!-- UY BEGIN -->
+<div id="uyan_frame" ></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1825414"></script>
+<!-- UY END -->
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner"><p>
+  Copyright &copy; 2015 - conan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

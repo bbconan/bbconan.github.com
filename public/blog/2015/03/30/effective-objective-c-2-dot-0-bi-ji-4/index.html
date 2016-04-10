@@ -1,0 +1,154 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Effective Objective-C 2.0 笔记4 - 技术博客</title>
+	<meta name="author" content="conan">
+
+	
+	<meta name="description" content="Effective Objective-C 2.0 笔记4 四、协议和类别 ①、delegate要用weak修饰，因为可以避免互相引用。 ②、利用category可以使继承关系变为可控制的段。 ③、扩展里可以添加私有方法、私有属性。 ④、在扩展里添加类的实例变量。 ⑤、利用分类来提供一个匿名对象 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="技术博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://bbconan.github.io/blog/2015/03/30/effective-objective-c-2-dot-0-bi-ji-4/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		document.write("<img src='http://www.gravatar.com/avatar/" + MD5("bbconan@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+	</script>
+</div>
+<h1><a href="/">技术博客</a></h1>
+<p class="subtitle">学无止境。</p>
+<nav id="main-nav"><ul class="main-navigation">
+  <li><a href="/">最新文章</a></li>
+  <li><a href="/blog/archives">文章列表</a></li>
+  <li><a href="/blog/categories">分类列表</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		<a class="weibo" href="http://www.weibo.com/1729937805" title="Weibo">Weibo</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">Effective Objective-C 2.0 笔记4</h1>
+	<div class="entry-content" itemprop="articleBody"><h1>四、协议和类别</h1>
+
+<h2>①、delegate要用weak修饰，因为可以避免互相引用。</h2>
+
+<h2>②、利用category可以使继承关系变为可控制的段。</h2>
+
+<h2>③、扩展里可以添加私有方法、私有属性。</h2>
+
+<h2>④、在扩展里添加类的实例变量。</h2>
+
+<h2>⑤、利用分类来提供一个匿名对象。它可以生成一个没有名字的inline(内联)类。</h2>
+
+<h2>⑥、NSDictionary中键值key是copy的，而值value是retain的。</h2>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+	
+
+  <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=1825414" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1365317553086911" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+
+</div>
+</div>
+
+
+<section id="comment">
+    <h1 class="title">评论</h1>
+	<!-- UY BEGIN -->
+<div id="uyan_frame" ></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1825414"></script>
+<!-- UY END -->
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner"><p>
+  Copyright &copy; 2015 - conan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,248 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>最近积累的几个Objective-C知识点 - 技术博客</title>
+	<meta name="author" content="conan">
+
+	
+	<meta name="description" content="最近积累的几个Objective-C知识点 1、__unused修饰符 &nbsp;&nbsp;&nbsp;&nbsp;__unused宏（事实上是attribute((unused))这个GCC的编译器属性，更多请参考mattt大神的博客）告诉编译器“如果我没用到这个变量，不要警告我”。 2、 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="技术博客" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://bbconan.github.io/blog/2014/11/20/zui-jin-ji-lei-de-ji-ge-object-czhi-shi-dian/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
+	<!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">	
+	<script src="/javascripts/md5.js"></script>
+	<script type="text/javascript">
+		document.write("<img src='http://www.gravatar.com/avatar/" + MD5("bbconan@gmail.com") + "?s=160' alt='Profile Picture' style='width: 160px;' />");
+	</script>
+</div>
+<h1><a href="/">技术博客</a></h1>
+<p class="subtitle">学无止境。</p>
+<nav id="main-nav"><ul class="main-navigation">
+  <li><a href="/">最新文章</a></li>
+  <li><a href="/blog/archives">文章列表</a></li>
+  <li><a href="/blog/categories">分类列表</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+		<a class="weibo" href="http://www.weibo.com/1729937805" title="Weibo">Weibo</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">最近积累的几个Objective-C知识点</h1>
+	<div class="entry-content" itemprop="articleBody"><h3>1、__unused修饰符</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;__unused宏（事实上是<strong>attribute</strong>((unused))这个GCC的编译器属性，更多请参考<a href="http://nshipster.com/__attribute__/">mattt大神的博客</a>）告诉编译器“如果我没用到这个变量，不要警告我”。</p>
+
+<h3>2、三元表达式的简写</h3>
+
+<p>?:是C中唯一一个三目运算符，用来替代简单的if-else语句，同时也是可以两元使用：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="n">inputString</span> <span class="o">?:</span> <span class="s">@&quot;default&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="n">inputString</span> <span class="o">?</span> <span class="n">inputString</span> <span class="o">:</span> <span class="s">@&quot;default&quot;</span><span class="p">;</span> <span class="c1">// 等价</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3、如果block的参数列表为空的话，相当于可变参数（不是void）。</h3>
+
+<h3>4、@compatibility_alias:允许现有类有不同的名称做别名。比如PSTCollectionView使用@compatibility_alias来显著提高对UICollectionView的向后兼容的直接替换的使用体验。(具体可参考NSHipster的文章)</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="c1">// 允许代码使用UICollectionView如同它可以在iOS SDK 5使用一样。</span>
+</span><span class='line'> <span class="c1">// http://developer.apple.com/legacy/mac/library/#documentation/DeveloperTools/gcc-3.3/gcc/compatibility_005falias.html</span>
+</span><span class='line'> <span class="err">#</span><span class="k">if</span> <span class="n">__IPHONE_OS_VERSION_MAX_ALLOWED</span> <span class="o">&lt;</span> <span class="mi">60000</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewController</span> <span class="n">PSTCollectionViewController</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionView</span> <span class="n">PSTCollectionView</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionReusableView</span> <span class="n">PSTCollectionReusableView</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewCell</span> <span class="n">PSTCollectionViewCell</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewLayout</span> <span class="n">PSTCollectionViewLayout</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewFlowLayout</span> <span class="n">PSTCollectionViewFlowLayout</span><span class="p">;</span>
+</span><span class='line'> <span class="err">@</span><span class="n">compatibility_alias</span> <span class="n">UICollectionViewLayoutAttributes</span> <span class="n">PSTCollectionViewLayoutAttributes</span><span class="p">;</span>
+</span><span class='line'> <span class="k">@protocol</span> <span class="nc">UICollectionViewDataSource</span> <span class="o">&lt;</span><span class="n">PSTCollectionViewDataSource</span><span class="o">&gt;</span> <span class="k">@end</span>
+</span><span class='line'> <span class="k">@protocol</span> <span class="nc">UICollectionViewDelegate</span> <span class="o">&lt;</span><span class="n">PSTCollectionViewDelegate</span><span class="o">&gt;</span> <span class="k">@end</span>
+</span><span class='line'> <span class="err">#</span><span class="n">endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5、<strong>attribute</strong>((constructor))</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;若函数被设定为constructor属性，则该函数会在main（）函数执行之前被自动的执行</p>
+
+<h3>6、看到QQ群里讨论，GCD最多能创建多少线程</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;66＝64（GCD线程池的最大值） + 主线程 + 其他随机非GCD线程。<a href="http://stackoverflow.com/questions/7213845/number-of-threads-created-by-gcd">来源</a></p>
+
+<h3>7、在Darwin层建立Notification监听的方法</h3>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在锁屏和解锁的时候，iOS系统会发送通知，经过搜索，得知大概有下面3种通知：<br>
+(1)、com.apple.iokit.hid.displayStatus<br>
+锁屏后通知会发出消息，在屏幕变亮后，没有滑动解锁，系统也会发出该通知。<br>
+(2)、com.apple.springboard.lockstate<br>
+在系统锁屏和滑动解锁后，会发出该通知<br>
+(3)、com.apple.springboard.lockcomplete
+锁屏后，发出该通知。这个通知总会在(2)通知后发出。<br></p>
+
+<p>判断屏幕是否有锁的方法<br></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'>    <span class="n">CFNotificationCenterAddObserver</span><span class="p">(</span><span class="n">CFNotificationCenterGetDarwinNotifyCenter</span><span class="p">(),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">displayStatusChanged</span><span class="p">,</span> <span class="n">CFSTR</span><span class="p">(</span><span class="s">&quot;com.apple.iokit.hid.displayStatus&quot;</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">CFNotificationSuspensionBehaviorDeliverImmediately</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="nf">displayStatusChanged</span><span class="p">(</span><span class="n">CFNotificationCenterRef</span> <span class="n">center</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">observer</span><span class="p">,</span> <span class="n">CFStringRef</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="n">CFDictionaryRef</span> <span class="n">userInfo</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;event received!&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">uint64_t</span> <span class="n">state</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">token</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">notify_register_check</span><span class="p">(</span><span class="s">&quot;com.apple.iokit.hid.displayStatus&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">notify_get_state</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">state</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">notify_cancel</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3、宏定义</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="err">#</span><span class="n">define</span> <span class="nb">nil</span> <span class="n">__DARWIN_NULL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>nil用于表示空的实例对象<br></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define Nil __DARWIN_NULL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nil用于表示空类对象</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+	
+
+  <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_32x32">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=1825414" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1365317553086911" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+
+</div>
+</div>
+
+
+<section id="comment">
+    <h1 class="title">评论</h1>
+	<!-- UY BEGIN -->
+<div id="uyan_frame" ></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1825414"></script>
+<!-- UY END -->
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner"><p>
+  Copyright &copy; 2015 - conan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+			<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+
+		</div>
+	</div>
+</body>
+</html>

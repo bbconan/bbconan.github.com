@@ -1,0 +1,9 @@
+<div class="highlight"><pre><span class="k">static</span> <span class="kt">void</span> <span class="nf">displayStatusChanged</span><span class="p">(</span><span class="n">CFNotificationCenterRef</span> <span class="n">center</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">observer</span><span class="p">,</span> <span class="n">CFStringRef</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="n">CFDictionaryRef</span> <span class="n">userInfo</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;event received!&quot;</span><span class="p">);</span>
+    <span class="n">uint64_t</span> <span class="n">state</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">token</span><span class="p">;</span>
+    <span class="n">notify_register_check</span><span class="p">(</span><span class="s">&quot;com.apple.iokit.hid.displayStatus&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">token</span><span class="p">);</span>
+    <span class="n">notify_get_state</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">state</span><span class="p">);</span>
+    <span class="n">notify_cancel</span><span class="p">(</span><span class="n">token</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>

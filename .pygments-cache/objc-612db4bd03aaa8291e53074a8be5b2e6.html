@@ -1,0 +1,21 @@
+<div class="highlight"><pre><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">{</span>
+    <span class="c1">//创建路径并获取句柄</span>
+    <span class="n">CGMutablePathRef</span> <span class="n">path</span> <span class="o">=</span> <span class="n">CGPathCreateMutable</span><span class="p">();</span>
+    <span class="c1">//指定矩形</span>
+    <span class="n">CGRect</span> <span class="n">rectangle</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+    <span class="c1">//将矩形添加到路径中</span>
+    <span class="n">CGPathAddRect</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">);</span>
+    <span class="c1">//获取上下文</span>
+    <span class="n">CGContextRef</span> <span class="n">currentContext</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+    <span class="c1">//将路径添加到上下文</span>
+    <span class="n">CGContextAddPath</span><span class="p">(</span><span class="n">currentContext</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+    <span class="c1">//设置矩形填充色</span>
+    <span class="n">CGContextSetFillColorWithColor</span><span class="p">(</span><span class="n">currentContext</span><span class="p">,</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithWhite:</span><span class="mf">0.0f</span> <span class="nl">alpha:</span><span class="mf">0.8f</span><span class="p">].</span><span class="n">CGColor</span><span class="p">);</span>
+    <span class="n">CGContextFillRect</span><span class="p">(</span><span class="n">currentContext</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">);</span>
+    <span class="n">CGContextClearRect</span><span class="p">(</span><span class="n">currentContext</span><span class="p">,</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mf">50.f</span><span class="p">,</span> <span class="mf">50.f</span><span class="p">,</span> <span class="mf">220.f</span><span class="p">,</span> <span class="mf">220.f</span><span class="p">));</span>
+    <span class="c1">//绘制</span>
+    <span class="n">CGContextDrawPath</span><span class="p">(</span><span class="n">currentContext</span><span class="p">,</span> <span class="n">kCGPathFillStroke</span><span class="p">);</span>
+    <span class="n">CGPathRelease</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+   
+<span class="p">}</span>
+</pre></div>
